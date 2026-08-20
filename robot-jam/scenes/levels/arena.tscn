@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://bjjqe7rfjad8y"]
+
+[ext_resource type="Script" uid="uid://p2am87youu5u" path="res://scripts/arena.gd" id="1_d30w0"]
+[ext_resource type="PackedScene" uid="uid://dgsyutfwg63n0" path="res://scenes/robot/robot.tscn" id="1_kvjm0"]
+[ext_resource type="Script" uid="uid://jyx6efa8ubot" path="res://scripts/player_input.gd" id="2_d2d03"]
+[ext_resource type="Resource" uid="uid://krhubycjnh5a" path="res://data/weapons/martillo.tres" id="2_myrex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
+size = Vector2(1920, 64)
+
+[node name="Arena" type="Node2D" unique_id=1052533288]
+script = ExtResource("1_d30w0")
+arma_prueba = ExtResource("2_myrex")
+
+[node name="Camara" type="Camera2D" parent="." unique_id=1151205058]
+position = Vector2(0, 200)
+
+[node name="Piso" type="StaticBody2D" parent="." unique_id=713518250]
+
+[node name="FormaPiso" type="CollisionShape2D" parent="Piso" unique_id=1708888118]
+position = Vector2(0, 400)
+shape = SubResource("RectangleShape2D_j8elp")
+
+[node name="RobotJugador" parent="." unique_id=292992516 instance=ExtResource("1_kvjm0")]
+position = Vector2(-300, 300)
+
+[node name="PlayerInput" type="Node" parent="RobotJugador" unique_id=1553152405 node_paths=PackedStringArray("robot")]
+script = ExtResource("2_d2d03")
+robot = NodePath("..")
+
+[node name="RobotRival" parent="." unique_id=1200683069 instance=ExtResource("1_kvjm0")]
+position = Vector2(300, 300)

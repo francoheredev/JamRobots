@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://dgsyutfwg63n0"]
+
+[ext_resource type="Script" uid="uid://dsl358y8agcoc" path="res://scripts/robot.gd" id="1_eh0qr"]
+[ext_resource type="Texture2D" uid="uid://br07hpdl6ofkb" path="res://icon.svg" id="2_ay6cs"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ay6cs"]
+size = Vector2(96, 64)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_weiqw"]
+size = Vector2(96, 64)
+
+[node name="Robot" type="CharacterBody2D" unique_id=292992516]
+script = ExtResource("1_eh0qr")
+
+[node name="ColisionCuerpo" type="CollisionShape2D" parent="." unique_id=633044493]
+shape = SubResource("RectangleShape2D_ay6cs")
+
+[node name="Visual" type="Node2D" parent="." unique_id=1844555352]
+
+[node name="Chasis" type="Sprite2D" parent="Visual" unique_id=2018881108]
+position = Vector2(3.8146973e-06, -1.9073486e-06)
+scale = Vector2(0.75000006, 0.49999997)
+texture = ExtResource("2_ay6cs")
+
+[node name="MountSuperior" type="Marker2D" parent="Visual" unique_id=720640160]
+position = Vector2(0, -40)
+
+[node name="MountDelantero" type="Marker2D" parent="Visual" unique_id=601450731]
+position = Vector2(56, 0)
+
+[node name="MountTrasero" type="Marker2D" parent="Visual" unique_id=1006546510]
+position = Vector2(-56, 0)
+
+[node name="MountMovilidad" type="Marker2D" parent="Visual" unique_id=813037484]
+position = Vector2(-40, 20)
+
+[node name="HitboxChasis" type="Area2D" parent="." unique_id=1291087025]
+
+[node name="FormaHitbox" type="CollisionShape2D" parent="HitboxChasis" unique_id=1459133921]
+shape = SubResource("RectangleShape2D_weiqw")

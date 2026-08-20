@@ -14,6 +14,11 @@ func _physics_process(_delta: float) -> void:
 	if robot == null or robot.rival == null or robot.esta_destruido():
 		return
 
+	if robot.volteado:
+		# La IA se levanta sola, sin simular pulsaciones.
+		robot.pulsar_reincorporacion(robot.espera_arriba())
+		return
+
 	var hacia_rival := robot.rival.global_position.x - robot.global_position.x
 	var distancia := absf(hacia_rival)
 	

@@ -12,6 +12,13 @@ func _physics_process(_delta: float) -> void:
 	if robot == null:
 		return
 
+	if robot.volteado:
+		if Input.is_action_just_pressed("recomponerse_arriba"):
+			robot.pulsar_reincorporacion(true)
+		if Input.is_action_just_pressed("recomponerse_abajo"):
+			robot.pulsar_reincorporacion(false)
+		return
+
 	robot.mover(Input.get_axis("mover_izquierda", "mover_derecha"))
 
 	if Input.is_action_just_pressed("arma_superior"):
@@ -20,3 +27,6 @@ func _physics_process(_delta: float) -> void:
 		robot.activar_arma(WeaponData.Slot.DELANTERO)
 	if Input.is_action_just_pressed("arma_trasera"):
 		robot.activar_arma(WeaponData.Slot.TRASERO)
+
+	if Input.is_key_pressed(KEY_V):
+		robot.voltear()

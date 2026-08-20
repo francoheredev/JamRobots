@@ -65,7 +65,7 @@ func _on_area_entered(area: Area2D) -> void:
 			return
 		_ya_golpeados.append(objetivo)
 		_acerto = true
-		objetivo.robot.recibir_dano(dano())
+		objetivo.robot.recibir_dano(dano(), data.slot)
 		return
 
 	# Choque arma contra arma: las dos se desgastan fuerte (ver GDD 10.5).

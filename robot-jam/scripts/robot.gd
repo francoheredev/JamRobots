@@ -8,6 +8,10 @@ const GRAVEDAD := 1400.0
 const VELOCIDAD_MAX := 240.0
 const ACELERACION := 1800.0
 const FRICCION := 2400.0
+## Reincorporación: alternancia fija W-S (ver GDD 4.4).
+const PULSACIONES_PARA_LEVANTARSE := 6
+## Piso de duración: aunque complete la secuencia perfecto, tarda esto.
+const VOLTEO_MINIMO := 1.0
 
 ## Nodo al que este robot orienta su vista. Lo asigna la arena al empezar.
 @export var rival: Node2D
@@ -21,6 +25,11 @@ var _direccion := 0.0
 
 ## Mientras está volcado no puede moverse ni atacar (ver GDD 4.3).
 var volteado := false
+
+var _pulsaciones := 0
+## Cuál de las dos teclas toca ahora. Arranca en arriba.
+var _espera_arriba := true
+var _tiempo_volcado := 0.0
 
 ## Armas equipadas por slot.
 var _armas := {}
@@ -41,6 +50,8 @@ func _physics_process(delta: float) -> void:
 
 	if volteado:
 		_direccion = 0.0
+		_tiempo_volcado += delta
+		_intentar_levantarse()
 
 	if is_zero_approx(_direccion):
 		velocity.x = move_toward(velocity.x, 0.0, FRICCION * delta)
@@ -103,11 +114,53 @@ func _actualizar_orientacion() -> void:
 	if hacia != 0.0:
 		visual.scale.x = absf(visual.scale.x) * hacia
 
-func recibir_dano(cantidad: float) -> void:
+## slot_origen indica con qué tipo de arma lo golpearon; -1 si no aplica.
+func recibir_dano(cantidad: float, slot_origen: int = -1) -> void:
 	if esta_destruido():
 		return
 	vida = maxf(vida - cantidad, 0.0)
 	EventBus.robot_danado.emit(self, cantidad)
 
+	# Golpe de arma superior recibido en el aire: cae volcado (ver GDD 4.3).
+	if slot_origen == WeaponData.Slot.SUPERIOR and not is_on_floor():
+		voltear()
+
 func esta_destruido() -> bool:
 	return vida <= 0.0
+
+## Lo llama quien voltea al robot: paletas, granada o impacto en el aire.
+func voltear() -> void:
+	if volteado or esta_destruido():
+		return
+	volteado = true
+	_pulsaciones = 0
+	_espera_arriba = true
+	_tiempo_volcado = 0.0
+	visual.rotation_degrees = 180.0
+	EventBus.robot_volteado.emit(self)
+
+
+## La llama el nodo de control con la tecla que se apretó.
+## Si es la que tocaba, suma; si no, no pasa nada (ver GDD 4.4).
+func pulsar_reincorporacion(es_arriba: bool) -> void:
+	if not volteado or es_arriba != _espera_arriba:
+		return
+	_pulsaciones += 1
+	_espera_arriba = not _espera_arriba
+	_intentar_levantarse()
+
+
+func _intentar_levantarse() -> void:
+	if _pulsaciones < PULSACIONES_PARA_LEVANTARSE:
+		return
+	if _tiempo_volcado < VOLTEO_MINIMO:
+		return
+	volteado = false
+	visual.rotation_degrees = 0.0
+	_actualizar_orientacion()
+	EventBus.robot_reincorporado.emit(self)
+
+
+## Cuál de las dos teclas toca ahora. La usa el HUD para el indicador.
+func espera_arriba() -> bool:
+	return _espera_arriba

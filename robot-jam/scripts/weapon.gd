@@ -22,16 +22,18 @@ var _cooldown_restante := 0.0
 var _puntos := 0
 var _golpe_restante := 0.0
 var _ya_golpeados: Array[RobotHurtbox] = []
+## Si esta activación llegó a tocar a alguien. Si no, pegó al vacío o al piso.
+var _acerto := false
 
 @onready var hitbox: Area2D = $Hitbox
 @onready var forma_hitbox: CollisionShape2D = $Hitbox/FormaHitbox
-
+@onready var sprite: Sprite2D = $Sprite
 
 func _ready() -> void:
 	hitbox.area_entered.connect(_on_area_entered)
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if _cooldown_restante > 0.0:
 		_cooldown_restante = maxf(_cooldown_restante - delta, 0.0)
 
@@ -40,6 +42,9 @@ func _process(delta: float) -> void:
 		if _golpe_restante <= 0.0:
 			forma_hitbox.disabled = true
 			_ya_golpeados.clear()
+			# Cerró sin tocar nada: erró y se llevó el golpe el terreno.
+			if not _acerto and data.desgaste_activo:
+				recibir_desgaste(WeaponData.Fuente.TERRENO)
 
 
 ## La llama el robot. Devuelve true si el arma llegó a activarse.
@@ -54,18 +59,36 @@ func activar() -> bool:
 
 ## Un robot solo puede ser golpeado una vez por activación de esta arma.
 func _on_area_entered(area: Area2D) -> void:
-	if not (area is RobotHurtbox):
+	if area is RobotHurtbox:
+		var objetivo := area as RobotHurtbox
+		if objetivo.robot == robot or objetivo in _ya_golpeados:
+			return
+		_ya_golpeados.append(objetivo)
+		_acerto = true
+		objetivo.robot.recibir_dano(dano())
 		return
-	var objetivo := area as RobotHurtbox
-	if objetivo.robot == robot or objetivo in _ya_golpeados:
+
+	# Choque arma contra arma: las dos se desgastan fuerte (ver GDD 10.5).
+	# El área que entró puede ser la hitbox de un arma rival.
+	var otra := area.get_parent() as Weapon
+	if otra == null or otra.robot == robot:
 		return
-	_ya_golpeados.append(objetivo)
-	objetivo.robot.recibir_dano(dano())
+
+	_acerto = true
+	if otra.golpeando():
+		# Las dos armas se cruzaron en pleno ataque: desgaste alto a ambas.
+		recibir_desgaste(WeaponData.Fuente.CHOQUE)
+	else:
+		# Le pegué a un arma que no estaba atacando: solo se desgasta ella.
+		otra.recibir_desgaste(WeaponData.Fuente.DIRECTO)
 
 
 func disponible() -> bool:
 	return estado != Estado.ROTA and _cooldown_restante <= 0.0
 
+## Si la hitbox está abierta ahora mismo.
+func golpeando() -> bool:
+	return _golpe_restante > 0.0
 
 ## Daño real, ya considerando la calidad y el desgaste.
 func dano() -> float:
@@ -90,6 +113,7 @@ func recibir_desgaste(fuente: WeaponData.Fuente) -> void:
 		return
 
 	estado = nuevo
+	_pintar_estado()
 	EventBus.arma_desgastada.emit(robot, data.slot, estado)
 	if estado == Estado.ROTA:
 		EventBus.arma_rota.emit(robot, data.slot)
@@ -100,5 +124,16 @@ func recibir_desgaste(fuente: WeaponData.Fuente) -> void:
 ## Por defecto abre la hitbox un instante frente al robot: sirve como golpe
 ## genérico mientras no haya un arma específica todavía.
 func _ejecutar() -> void:
+	_acerto = false
 	forma_hitbox.disabled = false
 	_golpe_restante = DURACION_GOLPE
+
+## Provisorio hasta que arte entregue los sprites por estado (ver GDD 10.8).
+func _pintar_estado() -> void:
+	match estado:
+		Estado.DANADA:
+			sprite.modulate = Color(1.0, 0.8, 0.2)
+		Estado.ROTA:
+			sprite.modulate = Color(0.9, 0.2, 0.2)
+		_:
+			sprite.modulate = Color.WHITE

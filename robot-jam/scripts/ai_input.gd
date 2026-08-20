@@ -5,11 +5,10 @@ extends Node
 ## Usa la misma interfaz que PlayerInput (mover / activar_arma) porque el
 ## Robot no distingue quién lo maneja (ver player_input.gd).
 
-const RANGO_ATAQUE := 70.0
+const RANGO_ATAQUE := 130.0
 
 @export var robot: Robot
 @export var slot_ataque: WeaponData.Slot = WeaponData.Slot.SUPERIOR
-
 
 func _physics_process(_delta: float) -> void:
 	if robot == null or robot.rival == null or robot.esta_destruido():
@@ -17,7 +16,7 @@ func _physics_process(_delta: float) -> void:
 
 	var hacia_rival := robot.rival.global_position.x - robot.global_position.x
 	var distancia := absf(hacia_rival)
-
+	
 	if distancia > RANGO_ATAQUE:
 		robot.mover(signf(hacia_rival))
 	else:

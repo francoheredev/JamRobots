@@ -25,7 +25,7 @@ func _ready() -> void:
 
 	EventBus.robot_danado.connect(_on_robot_danado)
 	EventBus.combate_terminado.connect(_on_combate_terminado)
-
+	EventBus.arma_desgastada.connect(_on_arma_desgastada)
 
 func _on_robot_danado(robot: Robot, _cantidad: float) -> void:
 	if robot == jugador:
@@ -43,3 +43,9 @@ func _on_combate_terminado(ganador: Robot) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if pista_reinicio.visible and event is InputEventKey and event.pressed and event.keycode == KEY_R:
 		GameManager.reiniciar()
+
+func _on_arma_desgastada(robot_afectado: Robot, slot: int, estado: int) -> void:
+	var quien := "Jugador" if robot_afectado == jugador else "Rival"
+	var nombres: Array[String] = ["INTACTA", "DAÑADA", "ROTA"]
+	var nombre_estado: String = nombres[estado]
+	print("[%s] arma del slot %d ahora está %s" % [quien, slot, nombre_estado])

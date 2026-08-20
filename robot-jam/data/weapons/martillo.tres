@@ -9,4 +9,6 @@ id = &"martillo"
 nombre = "Martillo"
 escena = ExtResource("1_jbf64")
 dano_base = 25.0
+puntos_a_danada = 2
+puntos_a_rota = 2
 metadata/_custom_type_script = "uid://mvvt0wqhjox4"

@@ -15,7 +15,8 @@ func _ready() -> void:
 
 	if arma_prueba != null:
 		jugador.equipar(arma_prueba.slot, arma_prueba)
-	
+		rival.equipar(arma_prueba.slot, arma_prueba)
+
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	GameManager.iniciar_combate(jugador, rival)
 

@@ -31,3 +31,7 @@ func _on_robot_danado(robot: Robot, _cantidad: float) -> void:
 
 func esta_en_combate() -> bool:
 	return _en_combate
+
+
+func reiniciar() -> void:
+	get_tree().reload_current_scene()

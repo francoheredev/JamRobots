@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dsl358y8agcoc" path="res://scripts/robot.gd" id="1_eh0qr"]
 [ext_resource type="Texture2D" uid="uid://br07hpdl6ofkb" path="res://icon.svg" id="2_ay6cs"]
+[ext_resource type="Script" path="res://scripts/robot_hurtbox.gd" id="3_hurtbox"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ay6cs"]
 size = Vector2(96, 64)
@@ -10,6 +11,8 @@ size = Vector2(96, 64)
 size = Vector2(96, 64)
 
 [node name="Robot" type="CharacterBody2D" unique_id=292992516]
+collision_layer = 2
+collision_mask = 3
 script = ExtResource("1_eh0qr")
 
 [node name="ColisionCuerpo" type="CollisionShape2D" parent="." unique_id=633044493]
@@ -35,6 +38,9 @@ position = Vector2(-56, 0)
 position = Vector2(-40, 20)
 
 [node name="HitboxChasis" type="Area2D" parent="." unique_id=1291087025]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("3_hurtbox")
 
 [node name="FormaHitbox" type="CollisionShape2D" parent="HitboxChasis" unique_id=1459133921]
 shape = SubResource("RectangleShape2D_weiqw")

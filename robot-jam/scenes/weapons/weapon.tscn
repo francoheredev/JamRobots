@@ -14,6 +14,9 @@ scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_nqevj")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=492201486]
+collision_layer = 8
+collision_mask = 4
 
 [node name="FormaHitbox" type="CollisionShape2D" parent="Hitbox" unique_id=159896214]
 shape = SubResource("RectangleShape2D_bjmcy")
+disabled = true

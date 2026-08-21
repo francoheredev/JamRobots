@@ -12,6 +12,8 @@ const FRICCION := 2400.0
 const PULSACIONES_PARA_LEVANTARSE := 6
 ## Piso de duración: aunque complete la secuencia perfecto, tarda esto.
 const VOLTEO_MINIMO := 1.0
+## Empujón que recibe el robot al ser volteado, para no caer sobre el rival.
+const EMPUJE_VOLTEO := Vector2(320.0, -180.0)
 
 ## Nodo al que este robot orienta su vista. Lo asigna la arena al empezar.
 @export var rival: Node2D
@@ -33,6 +35,7 @@ var _tiempo_volcado := 0.0
 
 ## Armas equipadas por slot.
 var _armas := {}
+var _movilidad: Mobility
 
 @onready var visual: Node2D = $Visual
 @onready var _mounts := {
@@ -53,11 +56,15 @@ func _physics_process(delta: float) -> void:
 		_tiempo_volcado += delta
 		_intentar_levantarse()
 
-	if is_zero_approx(_direccion):
-		velocity.x = move_toward(velocity.x, 0.0, FRICCION * delta)
-	else:
-		velocity.x = move_toward(velocity.x, _direccion * VELOCIDAD_MAX, ACELERACION * delta)
+	# En el aire casi no frena: el impulso del salto se mantiene (ver GDD 8).
+	var freno := FRICCION if is_on_floor() else FRICCION * 0.15
+	var acel := ACELERACION if is_on_floor() else ACELERACION * 0.35
 
+	if is_zero_approx(_direccion):
+		velocity.x = move_toward(velocity.x, 0.0, freno * delta)
+	else:
+		velocity.x = move_toward(velocity.x, _direccion * VELOCIDAD_MAX, acel * delta)
+	
 	move_and_slide()
 
 	if is_on_floor() and not volteado:
@@ -115,7 +122,7 @@ func _actualizar_orientacion() -> void:
 		visual.scale.x = absf(visual.scale.x) * hacia
 
 ## slot_origen indica con qué tipo de arma lo golpearon; -1 si no aplica.
-func recibir_dano(cantidad: float, slot_origen: int = -1) -> void:
+func recibir_dano(cantidad: float, slot_origen: int = -1, origen: Vector2 = Vector2.ZERO) -> void:
 	if esta_destruido():
 		return
 	vida = maxf(vida - cantidad, 0.0)
@@ -123,13 +130,14 @@ func recibir_dano(cantidad: float, slot_origen: int = -1) -> void:
 
 	# Golpe de arma superior recibido en el aire: cae volcado (ver GDD 4.3).
 	if slot_origen == WeaponData.Slot.SUPERIOR and not is_on_floor():
-		voltear()
+		voltear(origen)
 
 func esta_destruido() -> bool:
 	return vida <= 0.0
 
 ## Lo llama quien voltea al robot: paletas, granada o impacto en el aire.
-func voltear() -> void:
+## origen es la posición del atacante, para empujar en sentido contrario.
+func voltear(origen: Vector2 = Vector2.ZERO) -> void:
 	if volteado or esta_destruido():
 		return
 	volteado = true
@@ -137,6 +145,14 @@ func voltear() -> void:
 	_espera_arriba = true
 	_tiempo_volcado = 0.0
 	visual.rotation_degrees = 180.0
+
+	if origen != Vector2.ZERO:
+		var lejos := signf(global_position.x - origen.x)
+		if lejos == 0.0:
+			lejos = 1.0
+		velocity.x = lejos * EMPUJE_VOLTEO.x
+		velocity.y = EMPUJE_VOLTEO.y
+
 	EventBus.robot_volteado.emit(self)
 
 
@@ -164,3 +180,32 @@ func _intentar_levantarse() -> void:
 ## Cuál de las dos teclas toca ahora. La usa el HUD para el indicador.
 func espera_arriba() -> bool:
 	return _espera_arriba
+
+
+## Instancia la habilidad de movilidad en su punto de montaje.
+## Es un slot único: equipar una reemplaza a la anterior (ver GDD 5.1).
+func equipar_movilidad(datos: MobilityData) -> void:
+	if _movilidad != null:
+		_movilidad.queue_free()
+		_movilidad = null
+
+	if datos == null or datos.escena == null:
+		return
+
+	var nueva: Mobility = datos.escena.instantiate()
+	nueva.data = datos
+	nueva.robot = self
+	$Visual/MountMovilidad.add_child(nueva)
+	_movilidad = nueva
+
+
+func activar_movilidad() -> void:
+	if not GameManager.esta_en_combate():
+		return
+	if volteado or esta_destruido() or _movilidad == null:
+		return
+	_movilidad.activar()
+
+
+func movilidad() -> Mobility:
+	return _movilidad

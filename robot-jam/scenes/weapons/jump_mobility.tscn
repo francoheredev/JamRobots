@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dxnocg21ots8i"]
+
+[ext_resource type="Script" uid="uid://c2ti17pmbdxcs" path="res://scripts/jump_mobility.gd" id="1_wbcxo"]
+
+[node name="JumpMobility" type="Node2D" unique_id=751771473]
+script = ExtResource("1_wbcxo")

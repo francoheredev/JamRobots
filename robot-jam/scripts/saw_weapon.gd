@@ -50,4 +50,4 @@ func _danar_a_los_que_siguen_dentro() -> void:
 		if hurtbox.robot.esta_destruido():
 			continue
 		_acerto = true
-		hurtbox.robot.recibir_dano(dano(), data.slot)
+		hurtbox.robot.recibir_dano(dano(), data.slot, robot.global_position)

@@ -85,7 +85,7 @@ func _on_area_entered(area: Area2D) -> void:
 		return
 	_ya_golpeados.append(objetivo)
 	_acerto = true
-	objetivo.robot.recibir_dano(dano(), data.slot)
+	objetivo.robot.recibir_dano(dano(), data.slot, robot.global_position)	
 
 
 ## Detecta armas rivales dentro de la hitbox. Se consulta cada frame porque

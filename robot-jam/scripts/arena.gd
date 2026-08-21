@@ -11,6 +11,8 @@ extends Node2D
 ## Arma del rival. Si queda vacío, usa la misma que el jugador.
 @export var arma_prueba_rival: WeaponData
 
+@export var movilidad_prueba: MobilityData
+
 func _ready() -> void:
 	jugador.rival = rival
 	rival.rival = jugador
@@ -20,6 +22,8 @@ func _ready() -> void:
 	var del_rival := arma_prueba_rival if arma_prueba_rival != null else arma_prueba
 	if del_rival != null:
 		rival.equipar(del_rival.slot, del_rival)
+	if movilidad_prueba != null:
+		jugador.equipar_movilidad(movilidad_prueba)
 
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	GameManager.iniciar_combate(jugador, rival)

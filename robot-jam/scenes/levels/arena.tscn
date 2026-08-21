@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://bdyhlkpn4vi8a" path="res://scripts/arena_camara.gd" id="3_cp0g4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/combat_hud.tscn" id="4_hud"]
 [ext_resource type="Resource" uid="uid://biog514sgjbie" path="res://data/mobility/salto.tres" id="4_wh3gv"]
+[ext_resource type="Resource" uid="uid://bhsu7q8b28ij1" path="res://data/weapons/paletas.tres" id="5_6gdmk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
 size = Vector2(1920, 64)
@@ -18,6 +19,7 @@ script = ExtResource("1_d30w0")
 arma_prueba = ExtResource("2_cp0g4")
 arma_prueba_rival = ExtResource("2_myrex")
 movilidad_prueba = ExtResource("4_wh3gv")
+arma_delantera_prueba = ExtResource("5_6gdmk")
 
 [node name="Camara" type="Camera2D" parent="." unique_id=1151205058 node_paths=PackedStringArray("robots")]
 position = Vector2(0, 200)

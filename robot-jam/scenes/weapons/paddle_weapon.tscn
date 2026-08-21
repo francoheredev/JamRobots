@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://ma5366nl5t8l"]
+
+[ext_resource type="Script" uid="uid://b14gel51o6m55" path="res://scripts/paddle_weapon.gd" id="1_tcxv6"]
+[ext_resource type="Texture2D" uid="uid://br07hpdl6ofkb" path="res://icon.svg" id="2_qcl0i"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
+size = Vector2(70, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tcxv6"]
+size = Vector2(70, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qcl0i"]
+size = Vector2(70, 12)
+
+[node name="PaddleWeapon" type="Node2D" unique_id=859227843]
+position = Vector2(0, 26)
+script = ExtResource("1_tcxv6")
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=935269363]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_qcl0i")
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1953786265]
+collision_layer = 8
+collision_mask = 12
+
+[node name="FormaHitbox" type="CollisionShape2D" parent="Hitbox" unique_id=1490435629]
+position = Vector2(40, 20)
+shape = SubResource("RectangleShape2D_j8elp")
+
+[node name="ZonaCarga" type="Area2D" parent="." unique_id=229722464]
+collision_layer = 8
+collision_mask = 4
+
+[node name="FormaZona" type="CollisionShape2D" parent="ZonaCarga" unique_id=1143461639]
+position = Vector2(45, 10)
+shape = SubResource("RectangleShape2D_tcxv6")
+
+[node name="Cuerpo" type="StaticBody2D" parent="." unique_id=1543458835]
+collision_mask = 0
+
+[node name="FormaCuerpo" type="CollisionShape2D" parent="Cuerpo" unique_id=1619900458]
+position = Vector2(45, 22)
+shape = SubResource("RectangleShape2D_qcl0i")

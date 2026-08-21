@@ -13,6 +13,8 @@ extends Node2D
 
 @export var movilidad_prueba: MobilityData
 
+@export var arma_delantera_prueba: WeaponData
+
 func _ready() -> void:
 	jugador.rival = rival
 	rival.rival = jugador
@@ -24,7 +26,9 @@ func _ready() -> void:
 		rival.equipar(del_rival.slot, Loot.generar(del_rival))
 	if movilidad_prueba != null:
 		jugador.equipar_movilidad(movilidad_prueba)
-
+	if arma_delantera_prueba != null:
+		jugador.equipar(arma_delantera_prueba.slot, Loot.generar(arma_delantera_prueba))
+		
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	GameManager.iniciar_combate(jugador, rival)
 	

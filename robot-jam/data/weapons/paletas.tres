@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://bhsu7q8b28ij1"]
+
+[ext_resource type="PackedScene" uid="uid://ma5366nl5t8l" path="res://scenes/weapons/paddle_weapon.tscn" id="1_1ilo5"]
+[ext_resource type="Script" uid="uid://mvvt0wqhjox4" path="res://scripts/resources/weapon_data.gd" id="2_kliai"]
+
+[resource]
+script = ExtResource("2_kliai")
+id = &"paletas"
+nombre = "Paletas"
+slot = 1
+escena = ExtResource("1_1ilo5")
+dano_base = 0.0
+cooldown_base = 3.0
+puntos_a_danada = 10
+puntos_a_rota = 10
+metadata/_custom_type_script = "uid://mvvt0wqhjox4"

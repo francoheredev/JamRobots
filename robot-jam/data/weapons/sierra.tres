@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://btcvxf6yd8nn4"]
+
+[ext_resource type="Script" uid="uid://mvvt0wqhjox4" path="res://scripts/resources/weapon_data.gd" id="1_6omfo"]
+[ext_resource type="PackedScene" uid="uid://cw5pqywd0wg60" path="res://scenes/weapons/saw_weapon.tscn" id="1_runjv"]
+
+[resource]
+script = ExtResource("1_6omfo")
+id = &"sierra"
+nombre = "Sierra circular"
+escena = ExtResource("1_runjv")
+dano_base = 8.0
+cooldown_base = 4.0
+puntos_a_danada = 3
+puntos_a_rota = 3
+metadata/_custom_type_script = "uid://mvvt0wqhjox4"

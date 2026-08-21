@@ -1,17 +1,17 @@
-[gd_scene format=3 uid="uid://bfijsi1gfodlp"]
+[gd_scene format=3 uid="uid://cw5pqywd0wg60"]
 
-[ext_resource type="Script" uid="uid://bivywdbdtr7mp" path="res://scripts/weapon.gd" id="1_eo7p8"]
-[ext_resource type="Texture2D" uid="uid://br07hpdl6ofkb" path="res://icon.svg" id="1_nqevj"]
+[ext_resource type="Script" uid="uid://bwguscjwteatm" path="res://scripts/saw_weapon.gd" id="1_dje1h"]
+[ext_resource type="Texture2D" uid="uid://br07hpdl6ofkb" path="res://icon.svg" id="2_6841y"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bjmcy"]
 size = Vector2(72, 72)
 
-[node name="Weapon" type="Node2D" unique_id=533151554]
-script = ExtResource("1_eo7p8")
+[node name="SawWeapon" type="Node2D" unique_id=533151554]
+script = ExtResource("1_dje1h")
 
 [node name="Sprite" type="Sprite2D" parent="." unique_id=1137942276]
 scale = Vector2(0.4, 0.4)
-texture = ExtResource("1_nqevj")
+texture = ExtResource("2_6841y")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=492201486]
 collision_layer = 8

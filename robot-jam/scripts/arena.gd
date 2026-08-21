@@ -8,6 +8,8 @@ extends Node2D
 
 ## Arma que se equipa al jugador para probar. Provisorio.
 @export var arma_prueba: WeaponData
+## Arma del rival. Si queda vacío, usa la misma que el jugador.
+@export var arma_prueba_rival: WeaponData
 
 func _ready() -> void:
 	jugador.rival = rival
@@ -15,7 +17,9 @@ func _ready() -> void:
 
 	if arma_prueba != null:
 		jugador.equipar(arma_prueba.slot, arma_prueba)
-		rival.equipar(arma_prueba.slot, arma_prueba)
+	var del_rival := arma_prueba_rival if arma_prueba_rival != null else arma_prueba
+	if del_rival != null:
+		rival.equipar(del_rival.slot, del_rival)
 
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	GameManager.iniciar_combate(jugador, rival)

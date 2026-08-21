@@ -27,6 +27,3 @@ func _physics_process(_delta: float) -> void:
 		robot.activar_arma(WeaponData.Slot.DELANTERO)
 	if Input.is_action_just_pressed("arma_trasera"):
 		robot.activar_arma(WeaponData.Slot.TRASERO)
-
-	if Input.is_key_pressed(KEY_V):
-		robot.voltear()

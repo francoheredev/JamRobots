@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://p2am87youu5u" path="res://scripts/arena.gd" id="1_d30w0"]
 [ext_resource type="PackedScene" uid="uid://dgsyutfwg63n0" path="res://scenes/robot/robot.tscn" id="1_kvjm0"]
+[ext_resource type="Resource" uid="uid://btcvxf6yd8nn4" path="res://data/weapons/sierra.tres" id="2_cp0g4"]
 [ext_resource type="Script" uid="uid://jyx6efa8ubot" path="res://scripts/player_input.gd" id="2_d2d03"]
 [ext_resource type="Resource" uid="uid://krhubycjnh5a" path="res://data/weapons/martillo.tres" id="2_myrex"]
 [ext_resource type="Script" uid="uid://clp37qrap7m61" path="res://scripts/ai_input.gd" id="3_ai"]
@@ -13,7 +14,8 @@ size = Vector2(1920, 64)
 
 [node name="Arena" type="Node2D" unique_id=1052533288]
 script = ExtResource("1_d30w0")
-arma_prueba = ExtResource("2_myrex")
+arma_prueba = ExtResource("2_cp0g4")
+arma_prueba_rival = ExtResource("2_myrex")
 
 [node name="Camara" type="Camera2D" parent="." unique_id=1151205058 node_paths=PackedStringArray("robots")]
 position = Vector2(0, 200)

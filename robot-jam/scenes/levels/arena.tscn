@@ -10,11 +10,13 @@
 [ext_resource type="Resource" uid="uid://dhfehj5ei38eq" path="res://data/mobility/turbo.tres" id="4_6gdmk"]
 [ext_resource type="PackedScene" path="res://scenes/ui/combat_hud.tscn" id="4_hud"]
 [ext_resource type="Resource" uid="uid://bhsu7q8b28ij1" path="res://data/weapons/paletas.tres" id="5_6gdmk"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu_pausa.tscn" id="6_pausa"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
-size = Vector2(1920, 64)
+size = Vector2(2260, 64)
 
 [node name="Arena" type="Node2D" unique_id=1052533288]
+position = Vector2(3, 0)
 script = ExtResource("1_d30w0")
 arma_prueba = ExtResource("2_cp0g4")
 arma_prueba_rival = ExtResource("2_myrex")
@@ -30,7 +32,7 @@ robots = [NodePath("../RobotJugador"), NodePath("../RobotRival")]
 collision_mask = 0
 
 [node name="FormaPiso" type="CollisionShape2D" parent="Piso" unique_id=1708888118]
-position = Vector2(0, 400)
+position = Vector2(170, 400)
 shape = SubResource("RectangleShape2D_j8elp")
 
 [node name="RobotJugador" parent="." unique_id=292992516 instance=ExtResource("1_kvjm0")]
@@ -50,3 +52,5 @@ robot = NodePath("..")
 [node name="CombatHUD" parent="." unique_id=797985570 node_paths=PackedStringArray("jugador", "rival") instance=ExtResource("4_hud")]
 jugador = NodePath("../RobotJugador")
 rival = NodePath("../RobotRival")
+
+[node name="MenuPausa" parent="." instance=ExtResource("6_pausa")]

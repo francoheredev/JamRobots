@@ -8,13 +8,16 @@ extends CanvasLayer
 
 @onready var barra_jugador: ProgressBar = $BarraJugador
 @onready var barra_rival: ProgressBar = $BarraRival
-@onready var etiqueta_resultado: Label = $EtiquetaResultado
-@onready var pista_reinicio: Label = $PistaReinicio
+@onready var boton_pausa: Button = $BotonPausa
+@onready var panel_resultado: CenterContainer = $PanelResultado
+@onready var etiqueta_resultado: Label = $PanelResultado/VBoxContainer/EtiquetaResultado
+@onready var pista_reinicio: Label = $PanelResultado/VBoxContainer/PistaReinicio
+@onready var boton_reintentar: Button = $PanelResultado/VBoxContainer/FilaBotones/BotonReintentar
+@onready var boton_menu: Button = $PanelResultado/VBoxContainer/FilaBotones/BotonMenu
 
 
 func _ready() -> void:
-	etiqueta_resultado.hide()
-	pista_reinicio.hide()
+	panel_resultado.hide()
 
 	if jugador:
 		barra_jugador.max_value = jugador.vida_max
@@ -27,6 +30,10 @@ func _ready() -> void:
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	EventBus.arma_desgastada.connect(_on_arma_desgastada)
 
+	boton_pausa.pressed.connect(_on_boton_pausa_pressed)
+	boton_reintentar.pressed.connect(_on_boton_reintentar_pressed)
+	boton_menu.pressed.connect(_on_boton_menu_pressed)
+
 func _on_robot_danado(robot: Robot, _cantidad: float) -> void:
 	if robot == jugador:
 		barra_jugador.value = robot.vida
@@ -36,8 +43,8 @@ func _on_robot_danado(robot: Robot, _cantidad: float) -> void:
 
 func _on_combate_terminado(ganador: Robot) -> void:
 	etiqueta_resultado.text = "VICTORIA" if ganador == jugador else "DERROTA"
-	etiqueta_resultado.show()
-	pista_reinicio.show()
+	panel_resultado.show()
+	boton_pausa.hide()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -49,3 +56,14 @@ func _on_arma_desgastada(robot_afectado: Robot, slot: int, estado: int) -> void:
 	var nombres: Array[String] = ["INTACTA", "DAÑADA", "ROTA"]
 	var nombre_estado: String = nombres[estado]
 	print("[%s] arma del slot %d ahora está %s" % [quien, slot, nombre_estado])
+
+func _on_boton_pausa_pressed() -> void:
+	var menu_pausa := get_tree().get_first_node_in_group("menu_pausa")
+	if menu_pausa:
+		menu_pausa.abrir()
+
+func _on_boton_reintentar_pressed() -> void:
+	GameManager.reiniciar()
+
+func _on_boton_menu_pressed() -> void:
+	GameManager.ir_a_menu_principal()

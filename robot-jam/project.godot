@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="RobotJam"
-run/main_scene="res://scenes/levels/arena.tscn"
+run/main_scene="res://scenes/ui/menu_principal.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 EventBus="*uid://epxupwbm7iiu"
 GameManager="*uid://bn0c0sj52kvtx"
+Configuracion="*res://scripts/autoload/configuracion.gd"
 
 [display]
 

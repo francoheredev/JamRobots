@@ -3,6 +3,9 @@ extends Node
 ## Estado de la corrida. Por ahora solo arbitra el combate actual;
 ## más adelante suma inventario, equipamiento y progreso (ver GDD 12.1).
 
+const RUTA_MENU := "res://scenes/ui/menu_principal.tscn"
+const RUTA_ARENA := "res://scenes/levels/arena.tscn"
+
 var _combatientes: Array[Robot] = []
 var _en_combate := false
 
@@ -34,4 +37,17 @@ func esta_en_combate() -> bool:
 
 
 func reiniciar() -> void:
+	get_tree().paused = false
 	get_tree().reload_current_scene()
+
+
+## La llama el menú principal para arrancar una partida nueva.
+func empezar_partida() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file(RUTA_ARENA)
+
+
+## La llama el menú de pausa (o cualquier UI) para volver al menú principal.
+func ir_a_menu_principal() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file(RUTA_MENU)

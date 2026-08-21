@@ -79,7 +79,11 @@ func _physics_process(delta: float) -> void:
 
 
 ## La llama el nodo de control una vez por frame mientras se quiera avanzar.
+## Terminado el combate, se ignora: el robot frena solo por fricción (ver
+## _physics_process) en vez de quedar caminando después de ganar o perder.
 func mover(direccion: float) -> void:
+	if not GameManager.esta_en_combate():
+		return
 	_direccion = clampf(direccion, -1.0, 1.0)
 	_ultima_direccion = _direccion
 

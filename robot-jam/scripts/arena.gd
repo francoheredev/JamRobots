@@ -18,15 +18,28 @@ func _ready() -> void:
 	rival.rival = jugador
 
 	if arma_prueba != null:
-		jugador.equipar(arma_prueba.slot, arma_prueba)
+		jugador.equipar(arma_prueba.slot, Loot.generar(arma_prueba))
 	var del_rival := arma_prueba_rival if arma_prueba_rival != null else arma_prueba
 	if del_rival != null:
-		rival.equipar(del_rival.slot, del_rival)
+		rival.equipar(del_rival.slot, Loot.generar(del_rival))
 	if movilidad_prueba != null:
 		jugador.equipar_movilidad(movilidad_prueba)
 
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	GameManager.iniciar_combate(jugador, rival)
+	
+	_mostrar_equipamiento("Jugador", jugador, arma_prueba.slot)
+	_mostrar_equipamiento("Rival", rival, del_rival.slot)
 
 func _on_combate_terminado(ganador: Robot) -> void:
 	print("Combate terminado. Ganador: %s" % ganador.name)
+
+func _mostrar_equipamiento(quien: String, robot_objetivo: Robot, slot: int) -> void:
+	var arma := robot_objetivo.arma(slot)
+	if arma == null:
+		return
+	var d := arma.data
+	print("%s: %s [%s] daño %.1f | cooldown %.2f | umbral %d/%d" % [
+		quien, d.nombre, d.nombre_calidad(), d.dano(), d.cooldown(),
+		d.umbral_danada(), d.umbral_rota()
+	])

@@ -57,3 +57,54 @@ func umbral_danada() -> int:
 
 func umbral_rota() -> int:
 	return umbral_danada() + int(round(puntos_a_rota * (1.0 + mod_vida)))
+
+
+## Rangos por calidad, tal cual la tabla del GDD 7.
+## Cada entrada es [minimo, maximo] en fracción (0.06 = 6%).
+const RANGOS := {
+	Calidad.NORMAL: {
+		"dano": [-0.05, 0.05], "vida": [0.0, 0.0], "cooldown": [0.0, 0.0],
+	},
+	Calidad.BUENA: {
+		"dano": [0.06, 0.10], "vida": [0.01, 0.10], "cooldown": [0.0, 0.0],
+	},
+	Calidad.EPICA: {
+		"dano": [0.11, 0.20], "vida": [0.11, 0.25], "cooldown": [0.01, 0.10],
+	},
+	Calidad.LEGENDARIA: {
+		"dano": [0.20, 0.50], "vida": [0.26, 0.50], "cooldown": [0.11, 0.20],
+	},
+}
+
+
+## Devuelve una COPIA del arma con la calidad rolada.
+## Nunca modifica el recurso original: se comparte por referencia y
+## rolear sobre él contaminaría todas las armas que lo usen.
+func generar(calidad_pedida: Calidad) -> WeaponData:
+	var copia: WeaponData = duplicate()
+	var rango: Dictionary = RANGOS[calidad_pedida]
+
+	copia.calidad = calidad_pedida
+	copia.mod_dano = randf_range(rango["dano"][0], rango["dano"][1])
+	copia.mod_vida = randf_range(rango["vida"][0], rango["vida"][1])
+	copia.mod_cooldown = randf_range(rango["cooldown"][0], rango["cooldown"][1])
+
+	return copia
+
+
+## Nombre de la calidad para mostrar en la interfaz.
+func nombre_calidad() -> String:
+	return ["Normal", "Buena", "Épica", "Legendaria"][calidad]
+
+
+## Color de la calidad, para bordes y textos del inventario.
+func color_calidad() -> Color:
+	match calidad:
+		Calidad.BUENA:
+			return Color(0.4, 0.85, 0.4)
+		Calidad.EPICA:
+			return Color(0.65, 0.45, 0.95)
+		Calidad.LEGENDARIA:
+			return Color(1.0, 0.75, 0.2)
+		_:
+			return Color(0.8, 0.8, 0.8)

@@ -93,7 +93,8 @@ func equipar(slot: int, datos: WeaponData) -> void:
 		return
 
 	var nueva: Weapon = datos.escena.instantiate()
-	nueva.data = datos
+	# Copia propia: dos robots pueden llevar la misma arma sin pisarse.
+	nueva.data = datos.duplicate()
 	nueva.robot = self
 	mount(slot).add_child(nueva)
 	_armas[slot] = nueva

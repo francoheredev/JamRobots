@@ -3,8 +3,8 @@ extends Node2D
 ## Arena de combate. Se encarga de presentar a los dos robots entre sí:
 ## cada uno necesita saber a quién mirar para orientarse.
 
-@onready var jugador: Robot = $RobotJugador
-@onready var rival: Robot = $RobotRival
+@onready var jugador: Robot = $Composicion/ContenedorArena/ViewportArena/RobotJugador
+@onready var rival: Robot = $Composicion/ContenedorArena/ViewportArena/RobotRival
 
 ## Arma que se equipa al jugador para probar. Provisorio.
 @export var arma_prueba: WeaponData

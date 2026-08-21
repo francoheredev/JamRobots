@@ -15,6 +15,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
 size = Vector2(2260, 64)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pared"]
+size = Vector2(24, 532)
+
 [node name="Arena" type="Node2D" unique_id=1052533288]
 position = Vector2(3, 0)
 script = ExtResource("1_d30w0")
@@ -23,34 +26,114 @@ arma_prueba_rival = ExtResource("2_myrex")
 movilidad_prueba = ExtResource("4_6gdmk")
 arma_delantera_prueba = ExtResource("5_6gdmk")
 
-[node name="Camara" type="Camera2D" parent="." unique_id=1151205058 node_paths=PackedStringArray("robots")]
+[node name="Composicion" type="CanvasLayer" parent="."]
+
+[node name="PanelPiloto" type="ColorRect" parent="Composicion"]
+anchor_right = 0.35
+anchor_bottom = 1.0
+color = Color(0.85, 0.8, 0.72, 1)
+
+[node name="EtiquetaPiloto" type="Label" parent="Composicion/PanelPiloto"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "Piloto\n(arte pendiente)"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="ContenedorArena" type="SubViewportContainer" parent="Composicion"]
+anchor_left = 0.35
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+
+[node name="ViewportArena" type="SubViewport" parent="Composicion/ContenedorArena"]
+size = Vector2i(749, 648)
+
+[node name="Fondo" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena"]
+offset_left = -3000.0
+offset_top = -2000.0
+offset_right = 4000.0
+offset_bottom = 3000.0
+color = Color(0.09, 0.1, 0.15, 1)
+
+[node name="Camara" type="Camera2D" parent="Composicion/ContenedorArena/ViewportArena" unique_id=1151205058 node_paths=PackedStringArray("robots")]
 position = Vector2(0, 200)
 script = ExtResource("3_cp0g4")
 robots = [NodePath("../RobotJugador"), NodePath("../RobotRival")]
 
-[node name="Piso" type="StaticBody2D" parent="." unique_id=713518250]
+[node name="Piso" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena" unique_id=713518250]
 collision_mask = 0
 
-[node name="FormaPiso" type="CollisionShape2D" parent="Piso" unique_id=1708888118]
+[node name="FormaPiso" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/Piso" unique_id=1708888118]
 position = Vector2(170, 400)
 shape = SubResource("RectangleShape2D_j8elp")
 
-[node name="RobotJugador" parent="." unique_id=292992516 instance=ExtResource("1_kvjm0")]
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/Piso"]
+offset_left = -960.0
+offset_top = 368.0
+offset_right = 1300.0
+offset_bottom = 432.0
+color = Color(0.32, 0.3, 0.34, 1)
+
+[node name="Techo" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena"]
+collision_mask = 0
+
+[node name="FormaTecho" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/Techo"]
+position = Vector2(170, 0)
+shape = SubResource("RectangleShape2D_j8elp")
+
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/Techo"]
+offset_left = -960.0
+offset_top = -32.0
+offset_right = 1300.0
+offset_bottom = 32.0
+color = Color(0.4, 0.85, 0.95, 0.5)
+
+[node name="ParedIzquierda" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena"]
+collision_mask = 0
+
+[node name="FormaParedIzquierda" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/ParedIzquierda"]
+position = Vector2(-960, 166)
+shape = SubResource("RectangleShape2D_pared")
+
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/ParedIzquierda"]
+offset_left = -972.0
+offset_top = -100.0
+offset_right = -948.0
+offset_bottom = 432.0
+color = Color(0.4, 0.85, 0.95, 0.5)
+
+[node name="ParedDerecha" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena"]
+collision_mask = 0
+
+[node name="FormaParedDerecha" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/ParedDerecha"]
+position = Vector2(1300, 166)
+shape = SubResource("RectangleShape2D_pared")
+
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/ParedDerecha"]
+offset_left = 1288.0
+offset_top = -100.0
+offset_right = 1312.0
+offset_bottom = 432.0
+color = Color(0.4, 0.85, 0.95, 0.5)
+
+[node name="RobotJugador" parent="Composicion/ContenedorArena/ViewportArena" unique_id=292992516 instance=ExtResource("1_kvjm0")]
 position = Vector2(-300, 300)
 
-[node name="PlayerInput" type="Node" parent="RobotJugador" unique_id=1553152405 node_paths=PackedStringArray("robot")]
+[node name="PlayerInput" type="Node" parent="Composicion/ContenedorArena/ViewportArena/RobotJugador" unique_id=1553152405 node_paths=PackedStringArray("robot")]
 script = ExtResource("2_d2d03")
 robot = NodePath("..")
 
-[node name="RobotRival" parent="." unique_id=1200683069 instance=ExtResource("1_kvjm0")]
+[node name="RobotRival" parent="Composicion/ContenedorArena/ViewportArena" unique_id=1200683069 instance=ExtResource("1_kvjm0")]
 position = Vector2(300, 300)
 
-[node name="AIInput" type="Node" parent="RobotRival" unique_id=399309446 node_paths=PackedStringArray("robot")]
+[node name="AIInput" type="Node" parent="Composicion/ContenedorArena/ViewportArena/RobotRival" unique_id=399309446 node_paths=PackedStringArray("robot")]
 script = ExtResource("3_ai")
 robot = NodePath("..")
 
 [node name="CombatHUD" parent="." unique_id=797985570 node_paths=PackedStringArray("jugador", "rival") instance=ExtResource("4_hud")]
-jugador = NodePath("../RobotJugador")
-rival = NodePath("../RobotRival")
+jugador = NodePath("../Composicion/ContenedorArena/ViewportArena/RobotJugador")
+rival = NodePath("../Composicion/ContenedorArena/ViewportArena/RobotRival")
 
 [node name="MenuPausa" parent="." instance=ExtResource("6_pausa")]

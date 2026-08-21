@@ -6,6 +6,8 @@
 script = ExtResource("1")
 
 [node name="BarraJugador" type="ProgressBar" parent="."]
+anchor_left = 0.35
+anchor_right = 0.35
 offset_left = 24.0
 offset_top = 24.0
 offset_right = 324.0
@@ -35,6 +37,7 @@ offset_bottom = 56.0
 text = "II"
 
 [node name="PanelResultado" type="CenterContainer" parent="."]
+anchor_left = 0.35
 anchor_right = 1.0
 anchor_bottom = 1.0
 

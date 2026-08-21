@@ -24,6 +24,8 @@ var vida := 0.0
 
 ## Dirección pedida este frame por el nodo de control (-1 a 1).
 var _direccion := 0.0
+## Última dirección pedida, sin resetear. La consulta el turbo.
+var _ultima_direccion := 0.0
 
 ## Mientras está volcado no puede moverse ni atacar (ver GDD 4.3).
 var volteado := false
@@ -71,12 +73,15 @@ func _physics_process(delta: float) -> void:
 		_actualizar_orientacion()
 
 	# El control vuelve a pedir dirección cada frame; si nadie pide, frena.
+	if is_zero_approx(_direccion):
+		_ultima_direccion = 0.0
 	_direccion = 0.0
 
 
 ## La llama el nodo de control una vez por frame mientras se quiera avanzar.
 func mover(direccion: float) -> void:
 	_direccion = clampf(direccion, -1.0, 1.0)
+	_ultima_direccion = _direccion
 
 
 ## Punto de montaje donde se instancia el arma de ese slot.
@@ -210,3 +215,8 @@ func activar_movilidad() -> void:
 
 func movilidad() -> Mobility:
 	return _movilidad
+
+## Dirección que el control pidió este frame, para las habilidades que
+## necesitan saberlo después del reseteo de _direccion.
+func direccion_pedida() -> float:
+	return _ultima_direccion

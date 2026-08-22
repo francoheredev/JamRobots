@@ -188,3 +188,7 @@ func _limpiar_golpeados() -> void:
 ## Gancho para efectos extra al impactar: aturdir, quemar, empujar.
 func _al_golpear(_victima: Robot) -> void:
 	pass
+
+## La llaman los proyectiles al explotar: el disparo no fue al vacío.
+func marcar_acierto() -> void:
+	_acerto = true

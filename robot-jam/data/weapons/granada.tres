@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://dhih5464l2d16"]
+
+[ext_resource type="Script" uid="uid://mvvt0wqhjox4" path="res://scripts/resources/weapon_data.gd" id="1_5bbnp"]
+[ext_resource type="PackedScene" uid="uid://chf26uv470ndu" path="res://scenes/weapons/grenade_weapon.tscn" id="1_x8q8x"]
+
+[resource]
+script = ExtResource("1_5bbnp")
+id = &"granada"
+nombre = "Lanzagranadas"
+slot = 2
+escena = ExtResource("1_x8q8x")
+dano_base = 40.0
+cooldown_base = 3.5
+puntos_a_danada = 8
+puntos_a_rota = 8
+metadata/_custom_type_script = "uid://mvvt0wqhjox4"

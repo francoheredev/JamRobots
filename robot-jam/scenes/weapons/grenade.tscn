@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://c6ub67254o8by"]
+
+[ext_resource type="Script" uid="uid://buidw6wbo47ok" path="res://scripts/projectile.gd" id="1_i07oa"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_j8elp"]
+radius = 8.0
+
+[node name="Granada" type="Area2D" unique_id=1108636676]
+collision_layer = 8
+collision_mask = 5
+script = ExtResource("1_i07oa")
+
+[node name="Sprite" type="Polygon2D" parent="." unique_id=1140774032]
+polygon = PackedVector2Array(-115, -57, -163, -16, -116, 24, -73, -19)
+uv = PackedVector2Array(-115, -57, -163, -16, -116, 24, -73, -19)
+
+[node name="FormaGranada" type="CollisionShape2D" parent="." unique_id=52456960]
+shape = SubResource("CircleShape2D_j8elp")

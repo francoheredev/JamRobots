@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://chf26uv470ndu"]
+
+[ext_resource type="Script" uid="uid://drymssiv5btwm" path="res://scripts/grenade_weapon.gd" id="1_s7uqn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjmcy"]
+size = Vector2(72, 72)
+
+[node name="GrenadeWeapon" type="Node2D" unique_id=533151554]
+script = ExtResource("1_s7uqn")
+
+[node name="Sprite" type="Polygon2D" parent="." unique_id=1137942276]
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=492201486]
+collision_layer = 8
+collision_mask = 12
+
+[node name="FormaHitbox" type="CollisionShape2D" parent="Hitbox" unique_id=159896214]
+position = Vector2(48, 24)
+shape = SubResource("RectangleShape2D_bjmcy")
+disabled = true

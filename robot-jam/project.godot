@@ -27,6 +27,10 @@ Torneo="*res://scripts/autoload/torneo.gd"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[global_group]
+
+robots=""
+
 [input]
 
 mover_izquierda={

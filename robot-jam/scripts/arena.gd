@@ -38,6 +38,7 @@ func _equipar_rival() -> void:
 	var equipo := Torneo.generar_equipo_rival()
 	for slot in equipo:
 		rival.equipar(slot, equipo[slot])
+		rival.equipar_movilidad(Torneo.MOVILIDAD_TURBO)
 
 func _on_combate_terminado(ganador: Robot) -> void:
 	if ganador != jugador:

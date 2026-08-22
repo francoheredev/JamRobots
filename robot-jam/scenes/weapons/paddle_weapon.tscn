@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://ma5366nl5t8l"]
 
 [ext_resource type="Script" uid="uid://b14gel51o6m55" path="res://scripts/paddle_weapon.gd" id="1_tcxv6"]
-[ext_resource type="Texture2D" uid="uid://br07hpdl6ofkb" path="res://icon.svg" id="2_qcl0i"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
 size = Vector2(70, 16)
@@ -16,9 +15,7 @@ size = Vector2(70, 12)
 position = Vector2(0, 26)
 script = ExtResource("1_tcxv6")
 
-[node name="Sprite" type="Sprite2D" parent="." unique_id=935269363]
-scale = Vector2(0.4, 0.4)
-texture = ExtResource("2_qcl0i")
+[node name="Sprite" type="Polygon2D" parent="." unique_id=935269363]
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=1953786265]
 collision_layer = 8

@@ -27,11 +27,25 @@ var _tiempo_dano := 0.0
 
 @onready var hitbox: Area2D = $Hitbox
 @onready var forma_hitbox: CollisionShape2D = $Hitbox/FormaHitbox
-@onready var sprite: Sprite2D = $Sprite
+@onready var sprite: Polygon2D = $Sprite
 
 
 func _ready() -> void:
 	hitbox.area_entered.connect(_on_area_entered)
+	_dibujar_forma()
+
+
+## Dibuja el arma como la forma de su slot (ver WeaponData.forma_slot)
+## coloreada según su calidad (ver WeaponData.color_calidad). Antes todas
+## las armas usaban el mismo ícono genérico y no se notaba al equipar un
+## fragmento nuevo; ahora cambia de forma y color al toque.
+func _dibujar_forma() -> void:
+	const RADIO := 26.0
+	var puntos := PackedVector2Array()
+	for punto in data.forma_slot():
+		puntos.append(punto * RADIO)
+	sprite.polygon = puntos
+	sprite.color = data.color_calidad()
 
 
 func _physics_process(delta: float) -> void:

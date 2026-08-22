@@ -4,3 +4,5 @@
 
 [node name="JumpMobility" type="Node2D" unique_id=751771473]
 script = ExtResource("1_wbcxo")
+
+[node name="Sprite" type="Polygon2D" parent="."]

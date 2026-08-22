@@ -1,49 +1,66 @@
 extends Node2D
 
-## Arena de combate. Se encarga de presentar a los dos robots entre sí:
-## cada uno necesita saber a quién mirar para orientarse.
+## Arena de combate. Arma a los dos robots según el estado del torneo
+## (ver Torneo) y ofrece fragmentos cuando el jugador gana una etapa.
 
 @onready var jugador: Robot = $Composicion/ContenedorArena/ViewportArena/RobotJugador
 @onready var rival: Robot = $Composicion/ContenedorArena/ViewportArena/RobotRival
 
-## Arma que se equipa al jugador para probar. Provisorio.
-@export var arma_prueba: WeaponData
-## Arma del rival. Si queda vacío, usa la misma que el jugador.
-@export var arma_prueba_rival: WeaponData
-
-@export var movilidad_prueba: MobilityData
-
-@export var arma_delantera_prueba: WeaponData
 
 func _ready() -> void:
 	jugador.rival = rival
 	rival.rival = jugador
 
-	if arma_prueba != null:
-		jugador.equipar(arma_prueba.slot, Loot.generar(arma_prueba))
-	var del_rival := arma_prueba_rival if arma_prueba_rival != null else arma_prueba
-	if del_rival != null:
-		rival.equipar(del_rival.slot, Loot.generar(del_rival))
-	if movilidad_prueba != null:
-		jugador.equipar_movilidad(movilidad_prueba)
-	if arma_delantera_prueba != null:
-		jugador.equipar(arma_delantera_prueba.slot, Loot.generar(arma_delantera_prueba))
-		
+	_equipar_jugador()
+	_equipar_rival()
+	jugador.equipar_movilidad(Torneo.movilidad_jugador)
+
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	GameManager.iniciar_combate(jugador, rival)
-	
-	_mostrar_equipamiento("Jugador", jugador, arma_prueba.slot)
-	_mostrar_equipamiento("Rival", rival, del_rival.slot)
+
+	print("Rival %d/%d: %s" % [
+		Torneo.indice_actual + 1, Torneo.total_rivales(), Torneo.rival_actual()["nombre"]
+	])
+
+
+func _equipar_jugador() -> void:
+	if Torneo.equipo_jugador.is_empty():
+		# Arranque del torneo: equipo básico completo (calidad Normal) para
+		# poder usar las tres funciones desde el primer combate: sierra en
+		# Superior, paletas en Delantero, táser en Trasero. Los fragmentos
+		# que se ganen después reemplazan estas de a una.
+		for base: WeaponData in [Torneo.ARMA_SIERRA, Torneo.ARMA_PALETAS, Torneo.ARMA_TASER]:
+			var comun := base.generar(WeaponData.Calidad.NORMAL)
+			Torneo.equipo_jugador[comun.slot] = comun
+
+	for slot in Torneo.equipo_jugador:
+		jugador.equipar(slot, Torneo.equipo_jugador[slot])
+
+
+func _equipar_rival() -> void:
+	var datos: Dictionary = Torneo.rival_actual()
+	var armas: Dictionary = datos["armas"]
+	for slot in armas:
+		var base: WeaponData = armas[slot]
+		rival.equipar(slot, base.generar(datos["calidad"]))
+
 
 func _on_combate_terminado(ganador: Robot) -> void:
-	print("Combate terminado. Ganador: %s" % ganador.name)
-
-func _mostrar_equipamiento(quien: String, robot_objetivo: Robot, slot: int) -> void:
-	var arma := robot_objetivo.arma(slot)
-	if arma == null:
+	if ganador != jugador:
+		Torneo.registrar_derrota()
 		return
-	var d := arma.data
-	print("%s: %s [%s] daño %.1f | cooldown %.2f | umbral %d/%d" % [
-		quien, d.nombre, d.nombre_calidad(), d.dano(), d.cooldown(),
-		d.umbral_danada(), d.umbral_rota()
-	])
+	if not Torneo.es_ultimo_rival():
+		_ofrecer_fragmentos()
+
+
+## Los fragmentos ofrecidos son las mismas armas que tenía puestas el
+## rival recién derrotado (ver GDD "Fragmentos": son piezas literales de
+## ese robot), con calidad recién rolada. La cantidad varía según cuántas
+## armas traía esa etapa, no se completa con otras para llegar a 3.
+func _ofrecer_fragmentos() -> void:
+	var armas: Dictionary = Torneo.rival_actual()["armas"]
+	var fragmentos: Array[WeaponData] = []
+	for slot in armas:
+		fragmentos.append(Loot.generar(armas[slot]))
+	if not fragmentos.is_empty():
+		EventBus.fragmentos_ofrecidos.emit(fragmentos)

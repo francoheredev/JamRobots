@@ -2,15 +2,12 @@
 
 [ext_resource type="Script" uid="uid://p2am87youu5u" path="res://scripts/arena.gd" id="1_d30w0"]
 [ext_resource type="PackedScene" uid="uid://dgsyutfwg63n0" path="res://scenes/robot/robot.tscn" id="1_kvjm0"]
-[ext_resource type="Resource" uid="uid://btcvxf6yd8nn4" path="res://data/weapons/sierra.tres" id="2_cp0g4"]
 [ext_resource type="Script" uid="uid://jyx6efa8ubot" path="res://scripts/player_input.gd" id="2_d2d03"]
-[ext_resource type="Resource" uid="uid://krhubycjnh5a" path="res://data/weapons/martillo.tres" id="2_myrex"]
 [ext_resource type="Script" uid="uid://clp37qrap7m61" path="res://scripts/ai_input.gd" id="3_ai"]
 [ext_resource type="Script" uid="uid://bdyhlkpn4vi8a" path="res://scripts/arena_camara.gd" id="3_cp0g4"]
-[ext_resource type="Resource" uid="uid://dhfehj5ei38eq" path="res://data/mobility/turbo.tres" id="4_6gdmk"]
 [ext_resource type="PackedScene" path="res://scenes/ui/combat_hud.tscn" id="4_hud"]
-[ext_resource type="Resource" uid="uid://bhsu7q8b28ij1" path="res://data/weapons/paletas.tres" id="5_6gdmk"]
 [ext_resource type="PackedScene" path="res://scenes/ui/menu_pausa.tscn" id="6_pausa"]
+[ext_resource type="PackedScene" path="res://scenes/ui/menu_fragmentos.tscn" id="7_fragmentos"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
 size = Vector2(2260, 64)
@@ -21,10 +18,6 @@ size = Vector2(24, 532)
 [node name="Arena" type="Node2D" unique_id=1052533288]
 position = Vector2(3, 0)
 script = ExtResource("1_d30w0")
-arma_prueba = ExtResource("2_cp0g4")
-arma_prueba_rival = ExtResource("2_myrex")
-movilidad_prueba = ExtResource("4_6gdmk")
-arma_delantera_prueba = ExtResource("5_6gdmk")
 
 [node name="Composicion" type="CanvasLayer" parent="."]
 
@@ -137,3 +130,5 @@ jugador = NodePath("../Composicion/ContenedorArena/ViewportArena/RobotJugador")
 rival = NodePath("../Composicion/ContenedorArena/ViewportArena/RobotRival")
 
 [node name="MenuPausa" parent="." instance=ExtResource("6_pausa")]
+
+[node name="MenuFragmentos" parent="." instance=ExtResource("7_fragmentos")]

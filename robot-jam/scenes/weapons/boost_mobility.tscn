@@ -4,3 +4,5 @@
 
 [node name="BoostMobility" type="Node2D" unique_id=2069882018]
 script = ExtResource("1_1ewfy")
+
+[node name="Sprite" type="Polygon2D" parent="."]

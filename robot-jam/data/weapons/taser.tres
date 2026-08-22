@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3]
+
+[ext_resource type="Script" uid="uid://mvvt0wqhjox4" path="res://scripts/resources/weapon_data.gd" id="1_taser"]
+[ext_resource type="PackedScene" uid="uid://bfijsi1gfodlp" path="res://scenes/weapons/weapon.tscn" id="2_taser"]
+
+[resource]
+script = ExtResource("1_taser")
+id = &"taser"
+nombre = "Táser"
+slot = 2
+escena = ExtResource("2_taser")
+dano_base = 15.0
+cooldown_base = 2.0
+puntos_a_danada = 10
+puntos_a_rota = 10
+metadata/_custom_type_script = "uid://mvvt0wqhjox4"

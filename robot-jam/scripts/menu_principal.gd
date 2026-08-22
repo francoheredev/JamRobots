@@ -19,6 +19,7 @@ func _ready() -> void:
 
 
 func _on_boton_jugar_pressed() -> void:
+	Torneo.reiniciar_torneo()
 	GameManager.empezar_partida()
 
 

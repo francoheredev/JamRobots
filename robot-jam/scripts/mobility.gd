@@ -9,6 +9,23 @@ var robot: Robot
 
 var _cooldown_restante := 0.0
 
+@onready var sprite: Polygon2D = $Sprite
+
+
+func _ready() -> void:
+	_dibujar_forma()
+
+
+## Dibuja la habilidad como su forma (hexágono) coloreada según el tipo
+## (ver MobilityData.forma y color). Antes no había ningún visual acá.
+func _dibujar_forma() -> void:
+	const RADIO := 22.0
+	var puntos := PackedVector2Array()
+	for punto in data.forma():
+		puntos.append(punto * RADIO)
+	sprite.polygon = puntos
+	sprite.color = data.color()
+
 
 func _physics_process(delta: float) -> void:
 	if _cooldown_restante > 0.0:

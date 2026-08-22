@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 EventBus="*uid://epxupwbm7iiu"
 GameManager="*uid://bn0c0sj52kvtx"
 Configuracion="*res://scripts/autoload/configuracion.gd"
+Torneo="*res://scripts/autoload/torneo.gd"
 
 [display]
 

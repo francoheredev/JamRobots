@@ -8,6 +8,7 @@ extends CanvasLayer
 
 @onready var barra_jugador: ProgressBar = $BarraJugador
 @onready var barra_rival: ProgressBar = $BarraRival
+@onready var etiqueta_progreso: Label = $EtiquetaProgreso
 @onready var boton_pausa: Button = $BotonPausa
 @onready var panel_resultado: CenterContainer = $PanelResultado
 @onready var etiqueta_resultado: Label = $PanelResultado/VBoxContainer/EtiquetaResultado
@@ -26,6 +27,10 @@ func _ready() -> void:
 		barra_rival.max_value = rival.vida_max
 		barra_rival.value = rival.vida
 
+	etiqueta_progreso.text = "Rival %d / %d — %s" % [
+		Torneo.indice_actual + 1, Torneo.total_rivales(), Torneo.rival_actual()["nombre"]
+	]
+
 	EventBus.robot_danado.connect(_on_robot_danado)
 	EventBus.combate_terminado.connect(_on_combate_terminado)
 	EventBus.arma_desgastada.connect(_on_arma_desgastada)
@@ -42,7 +47,10 @@ func _on_robot_danado(robot: Robot, _cantidad: float) -> void:
 
 
 func _on_combate_terminado(ganador: Robot) -> void:
-	etiqueta_resultado.text = "VICTORIA" if ganador == jugador else "DERROTA"
+	if ganador == jugador and Torneo.es_ultimo_rival():
+		etiqueta_resultado.text = "¡CAMPEÓN DEL TORNEO!"
+	else:
+		etiqueta_resultado.text = "VICTORIA" if ganador == jugador else "DERROTA"
 	panel_resultado.show()
 	boton_pausa.hide()
 

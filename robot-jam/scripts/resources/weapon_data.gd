@@ -108,3 +108,21 @@ func color_calidad() -> Color:
 			return Color(1.0, 0.75, 0.2)
 		_:
 			return Color(0.8, 0.8, 0.8)
+
+
+## Forma del ícono según el slot (parte modificable), para reconocer de un
+## vistazo qué parte del robot cambia este fragmento sin depender del color
+## (que ya está tomado por la calidad). Puntos normalizados en [-1, 1].
+func forma_slot() -> PackedVector2Array:
+	match slot:
+		Slot.SUPERIOR:
+			# Rombo: se monta arriba del chasis.
+			return PackedVector2Array([Vector2(0, -1), Vector2(1, 0), Vector2(0, 1), Vector2(-1, 0)])
+		Slot.DELANTERO:
+			# Triángulo apuntando al frente.
+			return PackedVector2Array([Vector2(-1, -1), Vector2(1, 0), Vector2(-1, 1)])
+		Slot.TRASERO:
+			# Triángulo apuntando atrás, espejado del delantero.
+			return PackedVector2Array([Vector2(1, -1), Vector2(-1, 0), Vector2(1, 1)])
+		_:
+			return PackedVector2Array([Vector2(-1, -1), Vector2(1, -1), Vector2(1, 1), Vector2(-1, 1)])

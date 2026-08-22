@@ -22,45 +22,56 @@ func _ready() -> void:
 		Torneo.indice_actual + 1, Torneo.total_rivales(), Torneo.rival_actual()["nombre"]
 	])
 
-
+## Arranca siempre del equipo base y le superpone lo que el jugador haya
+## conservado o ganado. Así una derrota nunca deja al robot con menos
+## armas de las que tenía al empezar: solo pierde la calidad ganada.
 func _equipar_jugador() -> void:
-	if Torneo.equipo_jugador.is_empty():
-		# Arranque del torneo: equipo básico completo (calidad Normal) para
-		# poder usar las tres funciones desde el primer combate: sierra en
-		# Superior, paletas en Delantero, táser en Trasero. Los fragmentos
-		# que se ganen después reemplazan estas de a una.
-		for base: WeaponData in [Torneo.ARMA_SIERRA, Torneo.ARMA_PALETAS, Torneo.ARMA_TASER]:
-			var comun := base.generar(WeaponData.Calidad.NORMAL)
-			Torneo.equipo_jugador[comun.slot] = comun
+	var equipo := Torneo.equipo_base()
 
 	for slot in Torneo.equipo_jugador:
-		jugador.equipar(slot, Torneo.equipo_jugador[slot])
+		equipo[slot] = Torneo.equipo_jugador[slot]
 
+	for slot in equipo:
+		jugador.equipar(slot, equipo[slot])
 
 func _equipar_rival() -> void:
-	var datos: Dictionary = Torneo.rival_actual()
-	var armas: Dictionary = datos["armas"]
-	for slot in armas:
-		var base: WeaponData = armas[slot]
-		rival.equipar(slot, base.generar(datos["calidad"]))
-
+	var equipo := Torneo.generar_equipo_rival()
+	for slot in equipo:
+		rival.equipar(slot, equipo[slot])
 
 func _on_combate_terminado(ganador: Robot) -> void:
 	if ganador != jugador:
-		Torneo.registrar_derrota()
+		_resolver_derrota()
 		return
-	if not Torneo.es_ultimo_rival():
-		_ofrecer_fragmentos()
 
+	# Venció al jefe final: se terminó el torneo (ver GDD 3).
+	if Torneo.es_ultimo_rival():
+		EventBus.torneo_terminado.emit(true)
+		return
 
-## Los fragmentos ofrecidos son las mismas armas que tenía puestas el
-## rival recién derrotado (ver GDD "Fragmentos": son piezas literales de
-## ese robot), con calidad recién rolada. La cantidad varía según cuántas
-## armas traía esa etapa, no se completa con otras para llegar a 3.
+	_ofrecer_fragmentos()
+
+## Los fragmentos son literalmente las armas que llevaba puestas el rival
+## derrotado, con la calidad con la que peleó. No se re-rolean: ganarle a
+## un rival fuerte tiene que valer más que ganarle a uno débil (ver GDD 1).
 func _ofrecer_fragmentos() -> void:
-	var armas: Dictionary = Torneo.rival_actual()["armas"]
 	var fragmentos: Array[WeaponData] = []
-	for slot in armas:
-		fragmentos.append(Loot.generar(armas[slot]))
+	for slot in Torneo.equipo_rival:
+		fragmentos.append(Torneo.equipo_rival[slot])
 	if not fragmentos.is_empty():
 		EventBus.fragmentos_ofrecidos.emit(fragmentos)
+
+## Al perder se conserva un fragmento (ver GDD 1). Si hay más de uno en
+## juego lo elige el jugador; con uno solo o ninguno no hay decisión que
+## tomar y la derrota se resuelve directo.
+func _resolver_derrota() -> void:
+	var ganados: Array[WeaponData] = []
+	for slot in Torneo.equipo_jugador:
+		ganados.append(Torneo.equipo_jugador[slot])
+
+	if ganados.size() < 2:
+		Torneo.registrar_derrota()
+		EventBus.torneo_terminado.emit(false)
+		return
+
+	EventBus.conservar_ofrecido.emit(ganados)

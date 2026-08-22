@@ -24,6 +24,7 @@ var _ya_golpeados: Array[RobotHurtbox] = []
 var _armas_chocadas: Array[Weapon] = []
 var _acerto := false
 var _tiempo_dano := 0.0
+var _borde: Polygon2D
 
 @onready var hitbox: Area2D = $Hitbox
 @onready var forma_hitbox: CollisionShape2D = $Hitbox/FormaHitbox
@@ -32,8 +33,8 @@ var _tiempo_dano := 0.0
 
 func _ready() -> void:
 	hitbox.area_entered.connect(_on_area_entered)
+	_crear_borde()
 	_dibujar_forma()
-
 
 ## Dibuja el arma como la forma de su slot (ver WeaponData.forma_slot)
 ## coloreada según su calidad (ver WeaponData.color_calidad). Antes todas
@@ -46,9 +47,30 @@ func _dibujar_forma() -> void:
 		puntos.append(punto * RADIO)
 	sprite.polygon = puntos
 	sprite.color = data.color_calidad()
+	_dibujar_borde()
 
+## Contorno que solo comunica durabilidad. El relleno del sprite ya está
+## tomado por la calidad, así que mezclar ambos en el mismo color hacía
+## ilegible el estado (ver GDD 10.8): una legendaria rota se veía naranja.
+func _crear_borde() -> void:
+	_borde = Polygon2D.new()
+	add_child(_borde)
+	move_child(_borde, 0)
+	_borde.position = sprite.position
+	_borde.color = Color.TRANSPARENT
+
+## Contorno un poco más grande que el arma, para que asome por detrás.
+func _dibujar_borde() -> void:
+	const RADIO_BORDE := 33.0
+	var puntos := PackedVector2Array()
+	for punto in data.forma_slot():
+		puntos.append(punto * RADIO_BORDE)
+	_borde.polygon = puntos
 
 func _physics_process(delta: float) -> void:
+	if _borde != null:
+		_borde.rotation = sprite.rotation
+
 	if _cooldown_restante > 0.0:
 		_cooldown_restante = maxf(_cooldown_restante - delta, 0.0)
 
@@ -64,7 +86,6 @@ func _physics_process(delta: float) -> void:
 			if not _acerto and data.desgaste_activo:
 				recibir_desgaste(WeaponData.Fuente.TERRENO)
 
-
 ## La llama el robot. Devuelve true si el arma llegó a activarse.
 func activar() -> bool:
 	if not disponible():
@@ -74,21 +95,17 @@ func activar() -> bool:
 	EventBus.arma_activada.emit(robot, data.slot)
 	return true
 
-
 func disponible() -> bool:
 	return estado != Estado.ROTA and _cooldown_restante <= 0.0
-
 
 ## Si la hitbox está abierta ahora mismo.
 func golpeando() -> bool:
 	return _golpe_restante > 0.0
 
-
 ## Daño real, ya considerando la calidad y el desgaste.
 func dano() -> float:
 	var base := data.dano()
 	return base * (1.0 - PENALIZACION_DANADA) if estado == Estado.DANADA else base
-
 
 ## Un robot solo puede ser golpeado una vez por activación de esta arma.
 func _on_area_entered(area: Area2D) -> void:
@@ -100,7 +117,6 @@ func _on_area_entered(area: Area2D) -> void:
 	_ya_golpeados.append(objetivo)
 	_acerto = true
 	objetivo.robot.recibir_dano(dano(), data.slot, robot.global_position)	
-
 
 ## Detecta armas rivales dentro de la hitbox. Se consulta cada frame porque
 ## area_entered no dispara si el área ya estaba adentro al abrirse.
@@ -119,7 +135,6 @@ func _revisar_choques() -> void:
 		else:
 			# Le pegué a un arma que no estaba atacando.
 			otra.recibir_desgaste(WeaponData.Fuente.DIRECTO)
-
 
 ## Suma puntos de desgaste de una fuente y actualiza el estado (ver GDD 10.5).
 func recibir_desgaste(fuente: WeaponData.Fuente) -> void:
@@ -143,17 +158,16 @@ func recibir_desgaste(fuente: WeaponData.Fuente) -> void:
 	if estado == Estado.ROTA:
 		EventBus.arma_rota.emit(robot, data.slot)
 
-
-## Provisorio hasta que arte entregue los sprites por estado (ver GDD 10.8).
+## El estado se comunica solo por el contorno: intacta no muestra nada,
+## y el relleno conserva siempre el color de su calidad.
 func _pintar_estado() -> void:
 	match estado:
 		Estado.DANADA:
-			sprite.modulate = Color(1.0, 0.8, 0.2)
+			_borde.color = Color(1.0, 0.75, 0.1)
 		Estado.ROTA:
-			sprite.modulate = Color(0.9, 0.2, 0.2)
+			_borde.color = Color(0.9, 0.15, 0.15)
 		_:
-			sprite.modulate = Color.WHITE
-
+			_borde.color = Color.TRANSPARENT
 
 ## Cada arma concreta puede sobreescribir esto con su propia animación de
 ## ataque. Por defecto abre la hitbox un instante frente al robot.
@@ -162,11 +176,9 @@ func _ejecutar() -> void:
 	forma_hitbox.disabled = false
 	_golpe_restante = DURACION_GOLPE
 
-
 ## Gancho para las armas hijas: se llama al cerrarse la ventana de golpe.
 func _al_cerrar_golpe() -> void:
 	pass
-
 
 ## Permite que un arma vuelva a golpear a un objetivo que ya tocó.
 func _limpiar_golpeados() -> void:

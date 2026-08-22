@@ -6,6 +6,8 @@ extends CanvasLayer
 @export var jugador: Robot
 @export var rival: Robot
 
+var _gano_torneo := false
+
 @onready var barra_jugador: ProgressBar = $BarraJugador
 @onready var barra_rival: ProgressBar = $BarraRival
 @onready var etiqueta_progreso: Label = $EtiquetaProgreso
@@ -32,8 +34,8 @@ func _ready() -> void:
 	]
 
 	EventBus.robot_danado.connect(_on_robot_danado)
-	EventBus.combate_terminado.connect(_on_combate_terminado)
 	EventBus.arma_desgastada.connect(_on_arma_desgastada)
+	EventBus.torneo_terminado.connect(_on_torneo_terminado)
 
 	boton_pausa.pressed.connect(_on_boton_pausa_pressed)
 	boton_reintentar.pressed.connect(_on_boton_reintentar_pressed)
@@ -45,18 +47,26 @@ func _on_robot_danado(robot: Robot, _cantidad: float) -> void:
 	elif robot == rival:
 		barra_rival.value = robot.vida
 
-
-func _on_combate_terminado(ganador: Robot) -> void:
-	if ganador == jugador and Torneo.es_ultimo_rival():
-		etiqueta_resultado.text = "¡CAMPEÓN DEL TORNEO!"
-	else:
-		etiqueta_resultado.text = "VICTORIA" if ganador == jugador else "DERROTA"
+## Solo se muestra al terminar la corrida, no en cada combate ganado:
+## en las victorias intermedias la pantalla que aparece es la de fragmentos.
+func _on_torneo_terminado(gano: bool) -> void:
+	_gano_torneo = gano
+	etiqueta_resultado.text = "¡CAMPEÓN!" if gano else "DERROTA"
+	pista_reinicio.text = "Presiona R para volver al menú" if gano else "Presiona R para reintentar"
+	boton_reintentar.visible = not gano
+	boton_menu.visible = true
 	panel_resultado.show()
-	boton_pausa.hide()
-
 
 func _unhandled_input(event: InputEvent) -> void:
-	if pista_reinicio.visible and event is InputEventKey and event.pressed and event.keycode == KEY_R:
+	if not panel_resultado.visible:
+		return
+	if not (event is InputEventKey and event.pressed and event.keycode == KEY_R):
+		return
+
+	if _gano_torneo:
+		Torneo.reiniciar_torneo()
+		GameManager.ir_a_menu_principal()
+	else:
 		GameManager.reiniciar()
 
 func _on_arma_desgastada(robot_afectado: Robot, slot: int, estado: int) -> void:

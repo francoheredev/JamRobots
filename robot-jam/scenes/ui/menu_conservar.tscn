@@ -1,10 +1,10 @@
-[gd_scene format=3 uid="uid://b7yno25x2hrye"]
+[gd_scene format=3 uid="uid://c05hmk7n5u2cl"]
 
-[ext_resource type="Script" uid="uid://v7sj7e0m1rtc" path="res://scripts/menu_fragmentos.gd" id="1"]
+[ext_resource type="Script" uid="uid://cuasabhyhfci0" path="res://scripts/menu_conservar.gd" id="1_5v0uy"]
 
-[node name="MenuFragmentos" type="CanvasLayer" unique_id=277712146]
+[node name="MenuConservar" type="CanvasLayer" unique_id=277712146]
 process_mode = 3
-script = ExtResource("1")
+script = ExtResource("1_5v0uy")
 
 [node name="Fondo" type="ColorRect" parent="." unique_id=799586400]
 anchors_preset = 15
@@ -25,14 +25,10 @@ alignment = 1
 [node name="EtiquetaTitulo" type="Label" parent="Fondo/CenterContainer/VBoxContainer" unique_id=1513799583]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
-text = "Elegí un fragmento"
+text = "Perdiste. Elegí qué conservás"
 horizontal_alignment = 1
 
 [node name="FilaTarjetas" type="HBoxContainer" parent="Fondo/CenterContainer/VBoxContainer" unique_id=1979982914]
 layout_mode = 2
 theme_override_constants/separation = 24
 alignment = 1
-
-[node name="BotonDescartar" type="Button" parent="Fondo/CenterContainer/VBoxContainer" unique_id=1943967890]
-layout_mode = 2
-text = "Descartar"

@@ -38,3 +38,10 @@ signal fragmento_elegido(fragmento: Resource)
 
 ## El equipamiento del robot del jugador cambió y hay que reconstruirlo.
 signal equipamiento_cambiado()
+
+## La corrida terminó. gano indica si fue por vencer al jefe final
+## o por perder un combate.
+signal torneo_terminado(gano: bool)
+
+## Al perder, el jugador elige cuál de sus fragmentos ganados conserva.
+signal conservar_ofrecido(lista: Array)

@@ -1,9 +1,12 @@
 extends Node
 
-## Torneo: la secuencia fija de rivales a vencer y el equipamiento del
-## jugador, que sobrevive entre combates (ver GDD "Fragmentos" y un torneo
-## no infinito que termina en jefe final). No hay progresión de por vida:
-## esto vive solo mientras dura una corrida, se resetea al jugar de nuevo.
+## Torneo: la secuencia de etapas hasta el jefe final y el equipamiento del
+## jugador, que sobrevive entre combates. No hay progresión de por vida:
+## esto vive solo mientras dura una corrida.
+##
+## Cada etapa define CUÁNTAS armas lleva el rival y de qué calidad; cuáles
+## le tocan se sortea del pool en cada combate. Así ningún rival es igual
+## dos veces y los fragmentos que suelta valen lo que él llevaba puesto.
 
 const ARMA_SIERRA := preload("res://data/weapons/sierra.tres")
 const ARMA_MARTILLO := preload("res://data/weapons/martillo.tres")
@@ -11,123 +14,107 @@ const ARMA_PALETAS := preload("res://data/weapons/paletas.tres")
 const ARMA_TASER := preload("res://data/weapons/taser.tres")
 const MOVILIDAD_TURBO := preload("res://data/mobility/turbo.tres")
 
-## Cada etapa: nombre del rival, sus armas por slot y la calidad con la
-## que pelea. Ojo: sierra y martillo son las dos alternativas del mismo
-## slot Superior (ver sus .tres, ninguna define slot propio y las dos
-## heredan el default), paletas es Delantero y táser es Trasero — por
-## eso nunca aparecen dos juntas en el mismo slot de un rival.
-## Del 1ro al 3ro se van sumando partes; del 4to en adelante ya pelean
-## con las tres, y de ahí en más solo escala la calidad hasta el jefe.
-const RIVALES := [
-	{
-		"nombre": "Chatarrero",
-		"armas": {WeaponData.Slot.SUPERIOR: ARMA_MARTILLO},
-		"calidad": WeaponData.Calidad.NORMAL,
-	},
-	{
-		"nombre": "Oxidado",
-		"armas": {WeaponData.Slot.DELANTERO: ARMA_PALETAS},
-		"calidad": WeaponData.Calidad.NORMAL,
-	},
-	{
-		"nombre": "Verdugo",
-		"armas": {WeaponData.Slot.SUPERIOR: ARMA_SIERRA, WeaponData.Slot.DELANTERO: ARMA_PALETAS},
-		"calidad": WeaponData.Calidad.BUENA,
-	},
-	{
-		"nombre": "Centinela",
-		"armas": {
-			WeaponData.Slot.SUPERIOR: ARMA_MARTILLO,
-			WeaponData.Slot.DELANTERO: ARMA_PALETAS,
-			WeaponData.Slot.TRASERO: ARMA_TASER,
-		},
-		"calidad": WeaponData.Calidad.BUENA,
-	},
-	{
-		"nombre": "Acorazado",
-		"armas": {
-			WeaponData.Slot.SUPERIOR: ARMA_SIERRA,
-			WeaponData.Slot.DELANTERO: ARMA_PALETAS,
-			WeaponData.Slot.TRASERO: ARMA_TASER,
-		},
-		"calidad": WeaponData.Calidad.BUENA,
-	},
-	{
-		"nombre": "Implacable",
-		"armas": {
-			WeaponData.Slot.SUPERIOR: ARMA_MARTILLO,
-			WeaponData.Slot.DELANTERO: ARMA_PALETAS,
-			WeaponData.Slot.TRASERO: ARMA_TASER,
-		},
-		"calidad": WeaponData.Calidad.EPICA,
-	},
-	{
-		"nombre": "Devastador",
-		"armas": {
-			WeaponData.Slot.SUPERIOR: ARMA_SIERRA,
-			WeaponData.Slot.DELANTERO: ARMA_PALETAS,
-			WeaponData.Slot.TRASERO: ARMA_TASER,
-		},
-		"calidad": WeaponData.Calidad.EPICA,
-	},
-	{
-		"nombre": "Titán",
-		"armas": {
-			WeaponData.Slot.SUPERIOR: ARMA_MARTILLO,
-			WeaponData.Slot.DELANTERO: ARMA_PALETAS,
-			WeaponData.Slot.TRASERO: ARMA_TASER,
-		},
-		"calidad": WeaponData.Calidad.LEGENDARIA,
-	},
-	{
-		"nombre": "Campeón",
-		"armas": {
-			WeaponData.Slot.SUPERIOR: ARMA_SIERRA,
-			WeaponData.Slot.DELANTERO: ARMA_PALETAS,
-			WeaponData.Slot.TRASERO: ARMA_TASER,
-		},
-		"calidad": WeaponData.Calidad.LEGENDARIA,
-	},
+## Armas disponibles por slot. Al sumar un arma nueva al juego, agregarla
+## acá y empieza a aparecer sola en los rivales.
+const POOL := {
+	WeaponData.Slot.SUPERIOR: [ARMA_SIERRA, ARMA_MARTILLO],
+	WeaponData.Slot.DELANTERO: [ARMA_PALETAS],
+	WeaponData.Slot.TRASERO: [ARMA_TASER],
+}
+
+## Escalado del torneo: primero suben las partes, después la calidad.
+const ETAPAS := [
+	{"nombre": "Chatarrero", "armas": 1, "calidad": WeaponData.Calidad.NORMAL},
+	{"nombre": "Oxidado", "armas": 2, "calidad": WeaponData.Calidad.NORMAL},
+	{"nombre": "Verdugo", "armas": 2, "calidad": WeaponData.Calidad.BUENA},
+	{"nombre": "Centinela", "armas": 3, "calidad": WeaponData.Calidad.BUENA},
+	{"nombre": "Acorazado", "armas": 3, "calidad": WeaponData.Calidad.BUENA},
+	{"nombre": "Implacable", "armas": 3, "calidad": WeaponData.Calidad.EPICA},
+	{"nombre": "Devastador", "armas": 3, "calidad": WeaponData.Calidad.EPICA},
+	{"nombre": "Titán", "armas": 3, "calidad": WeaponData.Calidad.LEGENDARIA},
+	{"nombre": "Campeón", "armas": 3, "calidad": WeaponData.Calidad.LEGENDARIA},
 ]
 
 var indice_actual := 0
-## Slot -> WeaponData ya equipado. Sobrevive entre combates y recargas
-## de escena; es lo que hace que elegir un fragmento tenga efecto real.
+## Slot -> WeaponData ganado. Sobrevive entre combates y recargas de
+## escena; es lo que hace que elegir un fragmento tenga efecto real.
 var equipo_jugador: Dictionary = {}
 var movilidad_jugador: MobilityData = MOVILIDAD_TURBO
+## Armas del rival del combate en curso. Son exactamente las que se
+## ofrecen como fragmentos al derrotarlo (ver GDD 1).
+var equipo_rival: Dictionary = {}
 
 
 func reiniciar_torneo() -> void:
 	indice_actual = 0
 	equipo_jugador.clear()
+	equipo_rival.clear()
 	movilidad_jugador = MOVILIDAD_TURBO
 
 
 func rival_actual() -> Dictionary:
-	return RIVALES[indice_actual]
+	return ETAPAS[indice_actual]
 
 
 func total_rivales() -> int:
-	return RIVALES.size()
+	return ETAPAS.size()
 
 
 func es_ultimo_rival() -> bool:
-	return indice_actual >= RIVALES.size() - 1
+	return indice_actual >= ETAPAS.size() - 1
 
 
-## La llama la arena cuando el jugador gana y elige fragmento: pasa al
-## próximo rival de la lista.
+## Sortea el equipamiento del rival de esta etapa. Se guarda porque son
+## las mismas armas que va a soltar como fragmentos si el jugador gana.
+func generar_equipo_rival() -> Dictionary:
+	var etapa := rival_actual()
+	var slots := POOL.keys()
+	slots.shuffle()
+
+	var cantidad: int = mini(etapa["armas"], slots.size())
+	equipo_rival = {}
+
+	for i in cantidad:
+		var slot = slots[i]
+		var opciones: Array = POOL[slot]
+		var base: WeaponData = opciones[randi() % opciones.size()]
+		equipo_rival[slot] = base.generar(etapa["calidad"])
+
+	return equipo_rival
+
+
+## Equipo con el que arranca toda corrida: las tres armas comunes en
+## calidad Normal. Los fragmentos ganados reemplazan estas de a una.
+func equipo_base() -> Dictionary:
+	var base := {}
+	for arma: WeaponData in [ARMA_SIERRA, ARMA_PALETAS, ARMA_TASER]:
+		var comun := arma.generar(WeaponData.Calidad.NORMAL)
+		base[comun.slot] = comun
+	return base
+
+
 func avanzar() -> void:
-	indice_actual = mini(indice_actual + 1, RIVALES.size() - 1)
+	indice_actual = mini(indice_actual + 1, ETAPAS.size() - 1)
 
 
 func equipar_fragmento(fragmento: WeaponData) -> void:
 	equipo_jugador[fragmento.slot] = fragmento
 
 
-## Al perder se descartan los fragmentos ganados y se vuelve al primer
-## rival con el equipo común de nuevo (_equipar_jugador en arena.gd
-## rearma esa base básica apenas ve el equipo vacío).
-func registrar_derrota() -> void:
+## Al perder se conserva UNA sola de las armas ganadas y se descarta el
+## resto, volviendo al primer rival (ver GDD 1 y pilar 3).
+func registrar_derrota(slot_conservado: int = -1) -> void:
+	var conservada: WeaponData = null
+
+	if not equipo_jugador.is_empty():
+		if slot_conservado >= 0 and equipo_jugador.has(slot_conservado):
+			conservada = equipo_jugador[slot_conservado]
+		else:
+			var slots := equipo_jugador.keys()
+			conservada = equipo_jugador[slots[randi() % slots.size()]]
+
 	equipo_jugador.clear()
+	if conservada != null:
+		equipo_jugador[conservada.slot] = conservada
+
 	indice_actual = 0

@@ -7,7 +7,8 @@
 [ext_resource type="Script" uid="uid://bdyhlkpn4vi8a" path="res://scripts/arena_camara.gd" id="3_cp0g4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/combat_hud.tscn" id="4_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/menu_pausa.tscn" id="6_pausa"]
-[ext_resource type="PackedScene" path="res://scenes/ui/menu_fragmentos.tscn" id="7_fragmentos"]
+[ext_resource type="PackedScene" uid="uid://b7yno25x2hrye" path="res://scenes/ui/menu_fragmentos.tscn" id="7_fragmentos"]
+[ext_resource type="PackedScene" uid="uid://c05hmk7n5u2cl" path="res://scenes/ui/menu_conservar.tscn" id="9_wh3gv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j8elp"]
 size = Vector2(2260, 64)
@@ -19,31 +20,37 @@ size = Vector2(24, 532)
 position = Vector2(3, 0)
 script = ExtResource("1_d30w0")
 
-[node name="Composicion" type="CanvasLayer" parent="."]
+[node name="Composicion" type="CanvasLayer" parent="." unique_id=990884489]
 
-[node name="PanelPiloto" type="ColorRect" parent="Composicion"]
+[node name="PanelPiloto" type="ColorRect" parent="Composicion" unique_id=1116291460]
+anchors_preset = -1
 anchor_right = 0.35
 anchor_bottom = 1.0
 color = Color(0.85, 0.8, 0.72, 1)
 
-[node name="EtiquetaPiloto" type="Label" parent="Composicion/PanelPiloto"]
+[node name="EtiquetaPiloto" type="Label" parent="Composicion/PanelPiloto" unique_id=638847179]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-text = "Piloto\n(arte pendiente)"
+text = "Piloto
+(arte pendiente)"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="ContenedorArena" type="SubViewportContainer" parent="Composicion"]
+[node name="ContenedorArena" type="SubViewportContainer" parent="Composicion" unique_id=471470914]
+anchors_preset = -1
 anchor_left = 0.35
 anchor_right = 1.0
 anchor_bottom = 1.0
 stretch = true
 
-[node name="ViewportArena" type="SubViewport" parent="Composicion/ContenedorArena"]
-size = Vector2i(749, 648)
+[node name="ViewportArena" type="SubViewport" parent="Composicion/ContenedorArena" unique_id=1076551575]
+handle_input_locally = false
+size = Vector2i(748, 648)
+render_target_update_mode = 4
 
-[node name="Fondo" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena"]
+[node name="Fondo" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena" unique_id=778143554]
 offset_left = -3000.0
 offset_top = -2000.0
 offset_right = 4000.0
@@ -62,49 +69,49 @@ collision_mask = 0
 position = Vector2(170, 400)
 shape = SubResource("RectangleShape2D_j8elp")
 
-[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/Piso"]
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/Piso" unique_id=1439290151]
 offset_left = -960.0
 offset_top = 368.0
 offset_right = 1300.0
 offset_bottom = 432.0
 color = Color(0.32, 0.3, 0.34, 1)
 
-[node name="Techo" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena"]
+[node name="Techo" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena" unique_id=1127349178]
 collision_mask = 0
 
-[node name="FormaTecho" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/Techo"]
+[node name="FormaTecho" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/Techo" unique_id=416416670]
 position = Vector2(170, 0)
 shape = SubResource("RectangleShape2D_j8elp")
 
-[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/Techo"]
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/Techo" unique_id=385133822]
 offset_left = -960.0
 offset_top = -32.0
 offset_right = 1300.0
 offset_bottom = 32.0
 color = Color(0.4, 0.85, 0.95, 0.5)
 
-[node name="ParedIzquierda" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena"]
+[node name="ParedIzquierda" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena" unique_id=456353470]
 collision_mask = 0
 
-[node name="FormaParedIzquierda" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/ParedIzquierda"]
+[node name="FormaParedIzquierda" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/ParedIzquierda" unique_id=1636407412]
 position = Vector2(-960, 166)
 shape = SubResource("RectangleShape2D_pared")
 
-[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/ParedIzquierda"]
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/ParedIzquierda" unique_id=1473053917]
 offset_left = -972.0
 offset_top = -100.0
 offset_right = -948.0
 offset_bottom = 432.0
 color = Color(0.4, 0.85, 0.95, 0.5)
 
-[node name="ParedDerecha" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena"]
+[node name="ParedDerecha" type="StaticBody2D" parent="Composicion/ContenedorArena/ViewportArena" unique_id=2139013319]
 collision_mask = 0
 
-[node name="FormaParedDerecha" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/ParedDerecha"]
+[node name="FormaParedDerecha" type="CollisionShape2D" parent="Composicion/ContenedorArena/ViewportArena/ParedDerecha" unique_id=766440988]
 position = Vector2(1300, 166)
 shape = SubResource("RectangleShape2D_pared")
 
-[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/ParedDerecha"]
+[node name="Visual" type="ColorRect" parent="Composicion/ContenedorArena/ViewportArena/ParedDerecha" unique_id=2044446845]
 offset_left = 1288.0
 offset_top = -100.0
 offset_right = 1312.0
@@ -129,6 +136,8 @@ robot = NodePath("..")
 jugador = NodePath("../Composicion/ContenedorArena/ViewportArena/RobotJugador")
 rival = NodePath("../Composicion/ContenedorArena/ViewportArena/RobotRival")
 
-[node name="MenuPausa" parent="." instance=ExtResource("6_pausa")]
+[node name="MenuPausa" parent="." unique_id=383481684 instance=ExtResource("6_pausa")]
 
-[node name="MenuFragmentos" parent="." instance=ExtResource("7_fragmentos")]
+[node name="MenuFragmentos" parent="." unique_id=280777690 instance=ExtResource("7_fragmentos")]
+
+[node name="MenuConservar" parent="." unique_id=277712146 instance=ExtResource("9_wh3gv")]

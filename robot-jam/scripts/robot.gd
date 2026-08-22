@@ -35,6 +35,9 @@ var _pulsaciones := 0
 var _espera_arriba := true
 var _tiempo_volcado := 0.0
 
+## Segundos que le quedan aturdido. Mientras dure no puede actuar.
+var _aturdido_restante := 0.0
+
 ## Armas equipadas por slot.
 var _armas := {}
 var _movilidad: Mobility
@@ -57,6 +60,10 @@ func _physics_process(delta: float) -> void:
 		_direccion = 0.0
 		_tiempo_volcado += delta
 		_intentar_levantarse()
+
+	if _aturdido_restante > 0.0:
+		_aturdido_restante = maxf(_aturdido_restante - delta, 0.0)
+		_direccion = 0.0
 
 	# En el aire casi no frena: el impulso del salto se mantiene (ver GDD 8).
 	var freno := FRICCION if is_on_floor() else FRICCION * 0.15
@@ -114,7 +121,7 @@ func equipar(slot: int, datos: WeaponData) -> void:
 func activar_arma(slot: int) -> void:
 	if not GameManager.esta_en_combate():
 		return
-	if volteado or esta_destruido() or not _armas.has(slot):
+	if volteado or esta_aturdido() or esta_destruido() or not _armas.has(slot):
 		return
 	_armas[slot].activar()
 
@@ -212,7 +219,7 @@ func equipar_movilidad(datos: MobilityData) -> void:
 func activar_movilidad() -> void:
 	if not GameManager.esta_en_combate():
 		return
-	if volteado or esta_destruido() or _movilidad == null:
+	if volteado or esta_aturdido() or esta_destruido() or _movilidad == null:
 		return
 	_movilidad.activar()
 
@@ -224,3 +231,15 @@ func movilidad() -> Mobility:
 ## necesitan saberlo después del reseteo de _direccion.
 func direccion_pedida() -> float:
 	return _ultima_direccion
+
+## Lo llama el táser al impactar. No interrumpe el volteo: si ya está
+## volcado, la reincorporación sigue su curso.
+func aturdir(segundos: float) -> void:
+	if esta_destruido() or volteado:
+		return
+	_aturdido_restante = maxf(_aturdido_restante, segundos)
+	EventBus.robot_aturdido.emit(self, segundos)
+
+
+func esta_aturdido() -> bool:
+	return _aturdido_restante > 0.0

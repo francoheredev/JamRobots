@@ -45,3 +45,6 @@ signal torneo_terminado(gano: bool)
 
 ## Al perder, el jugador elige cuál de sus fragmentos ganados conserva.
 signal conservar_ofrecido(lista: Array)
+
+## El robot quedó aturdido y no puede actuar por unos segundos.
+signal robot_aturdido(robot: Node, segundos: float)

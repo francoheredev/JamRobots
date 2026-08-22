@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bn1pt5k0uyl4l"]
+
+[ext_resource type="Script" uid="uid://dnxe4x8v8ls76" path="res://scripts/taser_weapon.gd" id="1_dv1dj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjmcy"]
+size = Vector2(330, 22)
+
+[node name="TaserWeapon" type="Node2D" unique_id=533151554]
+position = Vector2(0, -70)
+script = ExtResource("1_dv1dj")
+
+[node name="Sprite" type="Polygon2D" parent="." unique_id=1137942276]
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=492201486]
+collision_layer = 8
+collision_mask = 12
+
+[node name="FormaHitbox" type="CollisionShape2D" parent="Hitbox" unique_id=159896214]
+position = Vector2(150, 0)
+rotation = 0.38397244
+shape = SubResource("RectangleShape2D_bjmcy")
+disabled = true

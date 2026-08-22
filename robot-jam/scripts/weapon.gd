@@ -117,6 +117,7 @@ func _on_area_entered(area: Area2D) -> void:
 	_ya_golpeados.append(objetivo)
 	_acerto = true
 	objetivo.robot.recibir_dano(dano(), data.slot, robot.global_position)	
+	_al_golpear(objetivo.robot)
 
 ## Detecta armas rivales dentro de la hitbox. Se consulta cada frame porque
 ## area_entered no dispara si el área ya estaba adentro al abrirse.
@@ -183,3 +184,7 @@ func _al_cerrar_golpe() -> void:
 ## Permite que un arma vuelva a golpear a un objetivo que ya tocó.
 func _limpiar_golpeados() -> void:
 	_ya_golpeados.clear()
+
+## Gancho para efectos extra al impactar: aturdir, quemar, empujar.
+func _al_golpear(_victima: Robot) -> void:
+	pass

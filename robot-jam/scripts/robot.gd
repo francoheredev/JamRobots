@@ -42,6 +42,10 @@ var _aturdido_restante := 0.0
 var _armas := {}
 var _movilidad: Mobility
 
+## Quemadura activa: daño por segundo y cuánto le queda (ver GDD 6.2).
+var _quemadura_dps := 0.0
+var _quemadura_restante := 0.0
+
 @onready var visual: Node2D = $Visual
 @onready var _mounts := {
 	WeaponData.Slot.SUPERIOR: $Visual/MountSuperior,
@@ -64,6 +68,12 @@ func _physics_process(delta: float) -> void:
 	if _aturdido_restante > 0.0:
 		_aturdido_restante = maxf(_aturdido_restante - delta, 0.0)
 		_direccion = 0.0
+
+	if _quemadura_restante > 0.0:
+		_quemadura_restante = maxf(_quemadura_restante - delta, 0.0)
+		recibir_dano(_quemadura_dps * delta)
+		if _quemadura_restante <= 0.0:
+			_quemadura_dps = 0.0
 
 	# En el aire casi no frena: el impulso del salto se mantiene (ver GDD 8).
 	var freno := FRICCION if is_on_floor() else FRICCION * 0.15
@@ -243,3 +253,15 @@ func aturdir(segundos: float) -> void:
 
 func esta_aturdido() -> bool:
 	return _aturdido_restante > 0.0
+
+## Aplica daño persistente. Si ya estaba quemándose, se queda con el
+## efecto más fuerte y refresca la duración: no se acumulan sumándose.
+func quemar(dano_por_segundo: float, segundos: float) -> void:
+	if esta_destruido():
+		return
+	_quemadura_dps = maxf(_quemadura_dps, dano_por_segundo)
+	_quemadura_restante = maxf(_quemadura_restante, segundos)
+
+
+func esta_quemandose() -> bool:
+	return _quemadura_restante > 0.0

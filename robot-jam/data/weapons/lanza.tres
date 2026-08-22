@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WeaponData" format=3 uid="uid://dfma2cgvi62el"]
+
+[ext_resource type="Script" uid="uid://mvvt0wqhjox4" path="res://scripts/resources/weapon_data.gd" id="1_5ngcp"]
+[ext_resource type="PackedScene" uid="uid://cnwtolt2s4urn" path="res://scenes/weapons/spear_weapon.tscn" id="1_e55xu"]
+
+[resource]
+script = ExtResource("1_5ngcp")
+id = &"lanza"
+nombre = "Lanza"
+slot = 1
+escena = ExtResource("1_e55xu")
+dano_base = 18.0
+cooldown_base = 1.8
+puntos_a_danada = 7
+puntos_a_rota = 7
+metadata/_custom_type_script = "uid://mvvt0wqhjox4"

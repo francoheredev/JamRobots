@@ -14,12 +14,14 @@ const ARMA_PALETAS := preload("res://data/weapons/paletas.tres")
 const ARMA_TASER := preload("res://data/weapons/taser.tres")
 const MOVILIDAD_TURBO := preload("res://data/mobility/turbo.tres")
 const ARMA_GRANADA := preload("res://data/weapons/granada.tres")
+const ARMA_LANZA := preload("res://data/weapons/lanza.tres")
+const ARMA_LANZALLAMAS := preload("res://data/weapons/lanzallamas.tres")
 
 ## Armas disponibles por slot. Al sumar un arma nueva al juego, agregarla
 ## acá y empieza a aparecer sola en los rivales.
 const POOL := {
 	WeaponData.Slot.SUPERIOR: [ARMA_SIERRA, ARMA_MARTILLO],
-	WeaponData.Slot.DELANTERO: [ARMA_PALETAS],
+	WeaponData.Slot.DELANTERO: [ARMA_PALETAS, ARMA_LANZA, ARMA_LANZALLAMAS],
 	WeaponData.Slot.TRASERO: [ARMA_TASER, ARMA_GRANADA],
 }
 

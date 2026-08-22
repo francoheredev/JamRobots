@@ -102,7 +102,6 @@ func disponible() -> bool:
 func golpeando() -> bool:
 	return _golpe_restante > 0.0
 
-## Daño real, ya considerando la calidad y el desgaste.
 func dano() -> float:
 	var base := data.dano()
 	return base * (1.0 - PENALIZACION_DANADA) if estado == Estado.DANADA else base

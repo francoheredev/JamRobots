@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://cnwtolt2s4urn"]
+
+[ext_resource type="Script" uid="uid://coc4o1b15rvrt" path="res://scripts/spear_weapon.gd" id="1_uqggk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bjmcy"]
+size = Vector2(100, 24)
+
+[node name="SpearWeapon" type="Node2D" unique_id=533151554]
+script = ExtResource("1_uqggk")
+
+[node name="Sprite" type="Polygon2D" parent="." unique_id=1137942276]
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=492201486]
+collision_layer = 8
+collision_mask = 12
+
+[node name="FormaHitbox" type="CollisionShape2D" parent="Hitbox" unique_id=159896214]
+position = Vector2(70, 0)
+shape = SubResource("RectangleShape2D_bjmcy")
+disabled = true

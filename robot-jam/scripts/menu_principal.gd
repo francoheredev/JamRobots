@@ -12,6 +12,7 @@ var _opciones_instancia: Control
 
 
 func _ready() -> void:
+	AudioManager.poner_musica(&"menu")
 	boton_jugar.pressed.connect(_on_boton_jugar_pressed)
 	boton_opciones.pressed.connect(_on_boton_opciones_pressed)
 	boton_salir.pressed.connect(_on_boton_salir_pressed)

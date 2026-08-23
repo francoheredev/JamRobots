@@ -9,4 +9,5 @@ id = &"turbo"
 nombre = "Turbo"
 escena = ExtResource("1_efr0t")
 cooldown_base = 2.5
+sonido = &"turbo"
 metadata/_custom_type_script = "uid://c5d2xdd5rk0hh"

@@ -8,6 +8,7 @@ extends Resource
 @export var nombre: String = ""
 @export var escena: PackedScene
 @export var cooldown_base: float = 1.0
+@export var sonido: StringName
 
 ## Modificador rodado según la calidad. Todavía sin definir en el GDD.
 @export var mod_cooldown: float = 0.0

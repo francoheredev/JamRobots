@@ -9,6 +9,7 @@ id = &"paletas"
 nombre = "Paletas"
 slot = 1
 escena = ExtResource("1_1ilo5")
+sonido = &"vapor"
 dano_base = 0.0
 cooldown_base = 3.0
 puntos_a_danada = 10

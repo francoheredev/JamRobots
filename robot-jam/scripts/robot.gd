@@ -153,6 +153,8 @@ func recibir_dano(cantidad: float, slot_origen: int = -1, origen: Vector2 = Vect
 	if esta_destruido():
 		return
 	vida = maxf(vida - cantidad, 0.0)
+	if vida <= 0.0:
+		AudioManager.reproducir(&"explosion_robot")
 	EventBus.robot_danado.emit(self, cantidad)
 
 	# Golpe de arma superior recibido en el aire: cae volcado (ver GDD 4.3).

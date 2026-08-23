@@ -9,6 +9,7 @@ id = &"granada"
 nombre = "Lanzagranadas"
 slot = 2
 escena = ExtResource("1_x8q8x")
+sonido = &"lanza_granada"
 dano_base = 30.0
 cooldown_base = 4.0
 puntos_a_danada = 8

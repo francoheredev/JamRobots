@@ -21,7 +21,7 @@ func _ready() -> void:
 	print("Rival %d/%d: %s" % [
 		Torneo.indice_actual + 1, Torneo.total_rivales(), Torneo.rival_actual()["nombre"]
 	])
-
+	AudioManager.poner_musica(&"combate")
 ## Arranca siempre del equipo base y le superpone lo que el jugador haya
 ## conservado o ganado. Así una derrota nunca deja al robot con menos
 ## armas de las que tenía al empezar: solo pierde la calidad ganada.

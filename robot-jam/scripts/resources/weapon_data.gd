@@ -21,6 +21,8 @@ const COSTO_DESGASTE := {
 @export var nombre: String = ""
 @export var slot: Slot = Slot.SUPERIOR
 @export var escena: PackedScene
+## Sonido que suena al activarla. Debe existir en AudioManager.SONIDOS.
+@export var sonido: StringName
 
 @export_group("Combate")
 @export var dano_base: float = 10.0

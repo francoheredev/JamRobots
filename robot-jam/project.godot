@@ -18,6 +18,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 EventBus="*uid://epxupwbm7iiu"
+AudioManager="*uid://bv4vdxb7t6d13"
 GameManager="*uid://bn0c0sj52kvtx"
 Configuracion="*res://scripts/autoload/configuracion.gd"
 Torneo="*res://scripts/autoload/torneo.gd"

@@ -8,6 +8,7 @@ script = ExtResource("1_6omfo")
 id = &"sierra"
 nombre = "Sierra circular"
 escena = ExtResource("1_runjv")
+sonido = &"sierra"
 dano_base = 8.0
 cooldown_base = 4.0
 puntos_a_danada = 12

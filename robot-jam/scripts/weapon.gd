@@ -91,6 +91,7 @@ func activar() -> bool:
 	if not disponible():
 		return false
 	_cooldown_restante = data.cooldown()
+	AudioManager.reproducir(data.sonido)
 	_ejecutar()
 	EventBus.arma_activada.emit(robot, data.slot)
 	return true

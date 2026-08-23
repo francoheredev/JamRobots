@@ -8,6 +8,7 @@ script = ExtResource("1_5udpb")
 id = &"martillo"
 nombre = "Martillo"
 escena = ExtResource("1_jbf64")
+sonido = &"martillo"
 dano_base = 25.0
 puntos_a_danada = 8
 puntos_a_rota = 8

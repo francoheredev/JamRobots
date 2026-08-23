@@ -9,6 +9,7 @@ id = &"lanza"
 nombre = "Lanza"
 slot = 1
 escena = ExtResource("1_e55xu")
+sonido = &"martillo"
 dano_base = 18.0
 cooldown_base = 1.8
 puntos_a_danada = 7

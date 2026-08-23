@@ -9,6 +9,7 @@ id = &"lanzallamas"
 nombre = "Lanzallamas"
 slot = 1
 escena = ExtResource("1_2g3l2")
+sonido = &"lanzallamas"
 dano_base = 3.0
 cooldown_base = 5.0
 desgaste_activo = false

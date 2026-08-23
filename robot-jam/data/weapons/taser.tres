@@ -9,6 +9,7 @@ id = &"taser"
 nombre = "Táser"
 slot = 2
 escena = ExtResource("1_fqa5p")
+sonido = &"taser"
 dano_base = 12.0
 puntos_a_danada = 10
 puntos_a_rota = 10

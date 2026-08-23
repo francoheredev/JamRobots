@@ -65,6 +65,7 @@ func _explotar() -> void:
 	if _explotado:
 		return
 	_explotado = true
+	AudioManager.reproducir(&"explosion_granada")
 
 	for robot in get_tree().get_nodes_in_group("robots"):
 		var objetivo := robot as Robot

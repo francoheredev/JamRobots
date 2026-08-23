@@ -39,6 +39,7 @@ func activar() -> bool:
 	if not _puede_ejecutar():
 		return false
 	_cooldown_restante = data.cooldown()
+	AudioManager.reproducir(data.sonido)
 	_ejecutar()
 	return true
 
